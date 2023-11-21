@@ -2,8 +2,8 @@
     "teams": [
 	{
 	    "name": "ISI",
-	    "models": ["FluABCaster", "IPSICast"],
-	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino"]
+	    "models": ["FluABCaster", "IPSICast", "GLEAM"],
+	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino", "luca-rossi-it"]
 	},
 	{
 	    "name": "ev_and_modelers",
