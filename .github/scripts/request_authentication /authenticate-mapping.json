@@ -1,13 +1,30 @@
 {
-	"teams": [{
-			"name": "ISI",
-			"models": ["GLEAM", "AutoArima"],
-			"users": ["gioco", "M-7th", "PMi74"]
-		},
-		{
-			"name": "MOBS",
-			"models": ["ModelA"],
-			"users": ["Chappi74", "userB"]
-		}
-	]
+    "teams": [
+	{
+	    "name": "ISI",
+	    "models": ["FluABCaster", "IPSICast"],
+	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino"]
+	},
+	{
+	    "name": "ev_and_modelers",
+	    "models": ["DeepRE"],
+	    "users": ["eugenio-valdano", "Federic0Bald0", "suprabhathk"]
+	},
+	{
+	    "name": "EpiQMUL",
+	    "models": ["SEIR_QMUL"],
+	    "users": ["nperra"]
+	},
+	{
+	    "name": "Richards_pmf",
+	    "models": ["glm_rich"],
+	    "users": ["fbranda"]
+	},
+	{
+	    "name": "CSL_PoliTo",
+	    "models": ["metaFlu"],
+	    "users": ["CSL-PoliTo"]
+	}
+    ]
 }
+
