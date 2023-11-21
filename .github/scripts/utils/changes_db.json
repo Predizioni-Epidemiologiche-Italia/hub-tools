@@ -1,0 +1,52 @@
+{
+    "ISI": [
+        {
+            "model": "gleam",
+            "changes": [
+                "previsioni/ISI_Gleam/2017_50.csv",
+                "previsioni/ISI_Gleam/2017_51.csv"
+            ]
+        },
+        {
+            "model": "autoarima",
+            "changes": [
+                "previsioni/ISI_AutoArima/2017_50.csv",
+                "previsioni/ISI_AutoArima/2017_51.csv"
+            ]
+        }
+    ],
+    "MOBS": [
+        {
+            "model": "FluABCaster",
+            "changes": [
+                "previsioni/MOBS_FluABCaster/2017_50.csv",
+                "previsioni/MOBS_FluABCaster/2017_51.csv"
+            ]
+        },
+        {
+            "model": "ModelA",
+            "changes": [
+                "previsioni/MOBS_ModelA/2023_07.csv"
+            ]
+        }
+    ],
+    "NE": [
+        {
+            "model": "unknown",
+            "changes": [
+                "previsioni/NE_Unknown/2017_50.csv",
+                "previsioni/NE_Unknown/2017_51.csv",
+                "previsioni/NE_Unknown/2017_53.csv",
+                "previsioni/NE_Unknown/2017_54.csv",
+                "previsioni/NE_Unknown/2017_55.csv"
+            ]
+        },
+        {
+            "model": "unknown2",
+            "changes": [
+                "previsioni/NE_Unknown2/2017_50.csv",
+                "previsioni/NE_Unknown2/2017_52.csv"
+            ]
+        }
+    ]
+}
