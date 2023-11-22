@@ -24,6 +24,11 @@
 	    "name": "CSL_PoliTo",
 	    "models": ["metaFlu"],
 	    "users": ["CSL-PoliTo"]
+	},
+	{
+	    "name": "TestTeam",
+	    "models": ["TestModel"],
+	    "users": ["PMi74", "gioco"]
 	}
     ]
 }
