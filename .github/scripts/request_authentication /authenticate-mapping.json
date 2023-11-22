@@ -12,7 +12,7 @@
 	},
 	{
 	    "name": "EpiQMUL",
-	    "models": ["SEIR_QMUL"],
+	    "models": ["SEIR_QMUL", "ARIMA_QMUL"],
 	    "users": ["nperra"]
 	},
 	{
