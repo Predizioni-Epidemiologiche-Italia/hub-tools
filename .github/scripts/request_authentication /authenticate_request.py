@@ -24,22 +24,43 @@ class Authenticator () :
         self.team = None
         self.models = None
 
-
+    #
+    #
     def authenticate (self): 
         # verify user
         self._authenticateUser()
 
         if self.team is None:
             # handle invalid user mapping
-            return False
+            raise RuntimeError ("User not found. Can not authenticate")
         
-        if not self._verifyPaths():
-            # handle invalid paths
-            return False
+        self._verifyPaths()
         
-        # everything look ok from an authentication point of view
-        return True
+    # 
+    # Verify that the actor of the PR is currently in the authorised db and 
+    # map it back to its Team and Models
+    def _authenticateUser (self):
+        j_in = None
+        
+        # load mappings file
+        with open(self.mappings) as f_json_input:
+            j_in = json.load(f_json_input)
+            
+        if j_in is None :
+            raise FileExistsError("Mapping file does not exist, can not authenticate")
+        
+        if not "teams" in j_in:
+            raise KeyError("Invalid Mapping file, can not authenticate")
+            
+        # loop over teams to find current user
+        teams = j_in['teams']
 
+        for team in teams:
+            if self.user in team['users']:
+                #found
+                self.team = team['name']
+                self.models = team['models']
+    
     #
     #
     def _verifyPaths (self):
@@ -52,9 +73,8 @@ class Authenticator () :
         
         if invalid_forcast_paths:
             # handle trying to save an unauthorised path 
-            print ("trying to save in unauthorised path")
-            return False
-        
+            raise PermissionError ("Trying to mofify in a not authorised path")
+            
         print ("Paths look ok, check file name")
 
         # Pattern that matches a forecast file added to the data-processed folder.
@@ -64,82 +84,48 @@ class Authenticator () :
 
         if invalid_forcast_names:
             # handle trying to save an unauthorised path 
-            print ("trying to save with an invalid file name")
-            return False
+            raise ValueError ("trying to save with an invalid file name")
 
         print ("Names look ok, go on")
-
-        return True
-    
-
-    # 
-    # Verify that the actor of the PR is currently in the authorised db and 
-    # map it back to its Team and Models
-    def _authenticateUser (self):
-        j_in = None
-        
-        # load mappings file
-        with open(self.mappings) as f_json_input:
-            j_in = json.load(f_json_input)
-            
-        if j_in is None :
-            print("### Failed to open input file")
-            return
-
-        # loop over teams to find current user
-        teams = j_in['teams']
-
-        for team in teams:
-            if self.user in team['users']:
-                #found
-                self.team = team['name']
-                self.models = team['models']
-
-    
+  
+    #
+    #
     def _defaultMappings (self):
         return os.path.join(os.path.dirname(__file__), config.default_mapping_file)
 
 
+def outputResults (result = True, result_msg = "" ):
+    env_file = os.getenv('GITHUB_OUTPUT')    
+    out_res = "success" if result else "failure"
+
+    with open(env_file, "a") as outenv:
+        print (f"Writing results to output auth: {out_res}, msg: {result_msg}")
+        outenv.write (f"authenticate={out_res}\n")
+        outenv.write (f"message={result_msg}")
+
 #
 def run ():
 
-    env_file = os.getenv('GITHUB_OUTPUT')
-    
     actor = os.getenv("calling_actor")
     changes = os.getenv("changed_files")
 
+
     if actor is None or changes is None:
-        print ("### Missing input! Abort")
-        return False
+        outputResults(False, "Missing input! Abort")
+        return
     
-    # debug only, to be removed
-    print ("### Actor: {}".format(actor))
-    print ("### Changed List: {}".format(changes))
+    authenticateObj = Authenticator(actor, changes.split(" "))
 
-    changes = changes.split(" ")
+    try:
 
-    authenticateObj = Authenticator(actor, changes)
-
-    authenticated = authenticateObj.authenticate()
-
-    with open(env_file, "a") as outenv:
-        print ()
-        outenv.write ("authentication={}".format(authenticated))
-        # if authenticated : 
-        #     outenv.write("authentication=passed")
-        # else :
-        #     outenv.write("authentication=failed")
+        authenticateObj.authenticate()
+        outputResults()
         
-    
-    return authenticated
+    except Exception as e:
+        outputResults(False, str(e))
 
+    
 
 if __name__ == "__main__":
     print ("### Testing tools_authenticate script")
-
-    passed = run()
-
-    if passed : 
-        print ("### >>>>>>>>>> PASSED")
-    else:
-        print ('### >>>>>>>>>> FAILED')
+    run()
