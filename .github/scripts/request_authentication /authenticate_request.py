@@ -73,7 +73,7 @@ class Authenticator () :
         
         if invalid_forcast_paths:
             # handle trying to save an unauthorised path 
-            raise PermissionError ("Trying to mofify in a not authorised path")
+            raise PermissionError (f"Trying to mofify in a not authorised path {invalid_forcast_paths}. Team:{self.team}, models: {self.models}")
             
         print ("Paths look ok, check file name")
 
