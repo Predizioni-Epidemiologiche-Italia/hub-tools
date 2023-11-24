@@ -69,13 +69,46 @@ def updateForecastsJson(json_file_path, changes):
         raise Exception(f"Error writing  {json_data} \n to json file: {json_file_path}\n")
         
 
-def storeStdData (data, db_file):
-    print ("Storing data")
+
+
+def filter_off(files, filtering_path):
+    # Filter list maintaining only those files not in the filtering path
+    filtered_list = [f for f in files if not f.startswith(filtering_path + os.path.sep)]    
+    return filtered_list
+
+def get_the_season (file_path, parent_folder):
+    folders = os.path.normpath(file_path).split(os.path.sep)
+
+    # Find season folder
+    season = None
+    path_found = False
+    
+    for folder in folders:
+        if folder == parent_folder:
+            path_found = True
+        elif path_found and folder:
+            season = folder
+            break  # when season found
+
+    return season
+
+
+##
+def storeSurveillance (data, db_file):
+
+    print ("Storing Surveillance data")
+    
     db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/", db_file)
     print(f"DB path: {db_path}")
+
+    # write changes except those under 'latest' folder
+    season = get_the_season (data[0], "sorveglianza")
+    data = filter_off(data, os.path.join("sorveglianza", season, "latest") )
     updateJsonData(db_path, data)
 
 
+
+##
 def updateJsonData (json_file_path, changes):
 
     json_data = None
@@ -125,7 +158,7 @@ def store(to_store):
         if rootFolder == "previsioni":
             # save model output
             model_changes.append(fchanged)
-        elif rootFolder == "target-data":
+        elif rootFolder == "sorveglianza":
             # save target-data
             targetdata_changes.append(fchanged)
         else :
@@ -139,7 +172,7 @@ def store(to_store):
 
     if targetdata_changes:
         print (f"{len(targetdata_changes)} changes in targetdata")
-        storeStdData(targetdata_changes, "target_db.json")
+        storeSurveillance(targetdata_changes, "target_db.json")
 
 
 
