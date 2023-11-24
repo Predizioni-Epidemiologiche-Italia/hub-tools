@@ -40,7 +40,7 @@ def run(storage_type, not_ingested):
     print ("Running run")
     db_path = None   
 
-    if storage_type == "model-output":
+    if storage_type == "previsioni":
         db_path = os.path.join(os.getcwd(), "./repo/.github/data-storage/changes_db.json")
             
     elif storage_type == "target":
