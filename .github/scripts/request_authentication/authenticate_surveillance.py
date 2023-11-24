@@ -14,7 +14,7 @@ class SurveillanceAuthenticator () :
     def authenticate (self): 
         # verify user
         self._authenticateUser()        
-        self._verifyPaths()
+        self._verifyPaths(self.changes, self.root_container)
 
 
     ##
