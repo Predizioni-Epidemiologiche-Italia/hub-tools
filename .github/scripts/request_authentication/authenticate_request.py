@@ -67,7 +67,7 @@ class Authenticator () :
 
         matching_list = []
         for model in self.models :
-            matching_list.append(os.path.join(config.default_saving_path, self.team + '_' + model))
+            matching_list.append(os.path.join(config.default_saving_path, self.team + '-' + model))
         
         invalid_forcast_paths = [changed_file for changed_file in self.changes if not os.path.split(changed_file)[0] in matching_list]
         

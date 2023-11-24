@@ -4,7 +4,7 @@ import json
 
 def storeForecasts (forecasts):
            
-    team = os.path.basename(os.path.split(forecasts[0])[0]).split('_')[0]
+    team = os.path.basename(os.path.split(forecasts[0])[0]).split('-')[0]
     if not team:
      raise Exception(f"invalid input data  {forecasts}\n")
 
@@ -15,7 +15,7 @@ def storeForecasts (forecasts):
     for forecast in forecasts:
 
         #get the model name from path
-        model = tuple(os.path.basename(os.path.split(forecast)[0]).split('_'))[1]
+        model = tuple(os.path.basename(os.path.split(forecast)[0]).split('-'))[1]
 
         model_entry = next((item for item in out_data['models'] if item["model"] == model), None)
         if model_entry is None:
@@ -172,9 +172,9 @@ def store(to_store):
 
 
 if __name__ == "__main__":
-
+    
     store_data = os.getenv("data")        
-    jchanges = json.loads(store_data)           
+    jchanges = json.loads(store_data)     
     print (f"Changes: {jchanges}")
     
     store(jchanges["pr-changes"])
