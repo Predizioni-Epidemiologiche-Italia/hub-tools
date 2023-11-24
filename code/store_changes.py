@@ -71,7 +71,6 @@ def updateForecastsJson(json_file_path, changes):
 
 def storeStdData (data, db_file):
     print ("Storing data")
-    #"/home/runner/work/the-hub/the-hub/./repo/.github/data-storage/" + db_file
     db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/", db_file)
     print(f"DB path: {db_path}")
     updateJsonData(db_path, data)
