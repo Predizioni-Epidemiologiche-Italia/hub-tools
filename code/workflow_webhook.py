@@ -77,6 +77,7 @@ def handleResponseError(http_code, j_response):
     res["status"] = j_response["status"]
     res["message"] = j_response["message"]
     
+    
 
     if http_code == 400:    
         # Bad request
@@ -95,7 +96,7 @@ def handleResponseError(http_code, j_response):
 
     elif http_code == 500:
 
-        print("Internal Server Error")
+        print(f"Internal Server Error: {j_response['message']}")
         res["failed_ingestions"] = "NA" if j_response["status"] == "error" else j_response["failed_ingestions"]
 
     else:
