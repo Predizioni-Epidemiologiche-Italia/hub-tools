@@ -62,6 +62,7 @@ def handleResponseOk(j_response):
     return res
 
 def handleServerError():
+    print ("Handling server error")
     res = {}
     res["status"] = "error"
     res["message"] = "Server Error"
@@ -120,6 +121,7 @@ def handleResponse (response):
     http_code = response.status_code
 
     if not response.headers["content-type"].strip().startswith("application/json"):
+        print (f'Handling not json response: {response.headers["content-type"]}')
         return handleServerError()
     elif http_code == 200:
         return handleResponseOk(response.json())
