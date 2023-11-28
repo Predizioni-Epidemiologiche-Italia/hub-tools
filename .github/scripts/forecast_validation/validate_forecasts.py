@@ -34,7 +34,7 @@ def validate_csv_files(file_format, csv_file):
 
           if reader.line_num == 1:
               # assert rec == file_fields
-              if rec != file_fields
+              if rec != file_fields:
                 raise Exception(f"Validation error: header is missing or its format is invalid")
               
               continue
