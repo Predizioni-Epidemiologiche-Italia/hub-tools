@@ -2,6 +2,10 @@ import os
 import re
 import json
 import sys
+from isoweek import Week
+from pathlib import Path
+from datetime import datetime
+
 
 # local's
 import authenticate_config as config
@@ -24,6 +28,12 @@ class Authenticator () :
         self.team = None
         self.models = None
 
+
+        # 2 = Tuesday, 
+        # self.submissionWeekDay = 2
+        # 3 = Wednesday - for the very first week
+        self.submissionWeekDay = 3
+
     #
     #
     def authenticate (self): 
@@ -34,6 +44,10 @@ class Authenticator () :
             # handle invalid user mapping
             raise RuntimeError ("User not found. Can not authenticate")
         
+        # check if submitted week matches the current submission window
+        self._isInSubmissionWindow()
+
+        #
         self._verifyPaths()
         
     # 
@@ -61,6 +75,23 @@ class Authenticator () :
                 self.team = team['name']
                 self.models = team['models']
     
+    #
+    # Verify submission window
+    def _isInSubmissionWindow (self):
+        reference_isoweek = Week.thisweek() -2 if datetime.now().isocalendar().weekday <= self.submissionWeekDay else Week.thisweek() - 1
+        for elem in self.changes :
+            year, week = Path(elem).stem.split('_')
+
+            uploading_week = Week.fromstring(year + "W" + week)
+            if uploading_week == reference_isoweek:
+                print ("Submission window ok")
+            elif uploading_week < reference_isoweek:
+                print ("trying to upload expired forecast")
+                raise ValueError ("trying to upload forecasts outside the curren uploading window. Currently accepting week: {reference_isoweek}")
+            else:
+                print ("Performing an early upload")
+                raise ValueError ("trying to upload forecasts outside the curren uploading window Currently accepting week: {reference_isoweek}")
+
     #
     #
     def _verifyPaths (self):
