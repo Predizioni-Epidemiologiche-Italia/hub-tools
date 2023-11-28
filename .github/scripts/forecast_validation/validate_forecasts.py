@@ -33,7 +33,10 @@ def validate_csv_files(file_format, csv_file):
           print ("validating record {} ...".format(rec))
 
           if reader.line_num == 1:
-              assert rec == file_fields
+              # assert rec == file_fields
+              if rec != file_fields
+                raise Exception(f"Validation error: header is missing or its format is invalid")
+              
               continue
 
           # check that the forecast year and week are consistent with those in the file name
