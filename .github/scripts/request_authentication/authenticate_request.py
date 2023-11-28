@@ -87,10 +87,10 @@ class Authenticator () :
                 print ("Submission window ok")
             elif uploading_week < reference_isoweek:
                 print ("trying to upload expired forecast")
-                raise ValueError ("trying to upload forecasts outside the curren uploading window. Currently accepting week: {reference_isoweek}")
+                raise ValueError (f"trying to upload forecasts outside the curren uploading window. Currently accepting week: {reference_isoweek}")
             else:
                 print ("Performing an early upload")
-                raise ValueError ("trying to upload forecasts outside the curren uploading window Currently accepting week: {reference_isoweek}")
+                raise ValueError (f"trying to upload forecasts outside the curren uploading window Currently accepting week: {reference_isoweek}")
 
     #
     #
