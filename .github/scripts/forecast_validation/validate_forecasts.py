@@ -46,7 +46,6 @@ def validate_csv_files(file_format, csv_file):
               is_valid = is_valid and eval(ck[0])(ck[1])
 
               if not is_valid:
-                  raise Exception(f"Invalid record in line {reader.line_num} of file {csv_file}\n"
-                      f"Value {ck[1]} not acceptable for field {ck[2]}.")
+                  raise Exception(f"Invalid record in line {reader.line_num} of file {csv_file} Value {ck[1]} not acceptable for field {ck[2]}.")
 
     return 'OK'
