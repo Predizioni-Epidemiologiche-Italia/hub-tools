@@ -24,31 +24,28 @@ def validate_csv_files(file_format, csv_file):
     with open(csv_file, "r") as in_file:
         print ("File opened ok")
       
-        reader = csv.reader(in_file)
-
+        reader = csv.DictReader(in_file)
+        
+        # check that header format is ok
+        if set(file_fields) != set(reader.fieldnames):
+          raise Exception(f"Validation error: header is missing or its format is invalid")              
+              
         # get forecasting year and week from the file name
         year, week = csv_file.split('/')[-1].split('.')[0].split('_')
 
+        # loop over records
         for rec in reader:
           print ("validating record {} ...".format(rec))
 
-          if reader.line_num == 1:
-              # assert rec == file_fields
-              if rec != file_fields:
-                raise Exception(f"Validation error: header is missing or its format is invalid")
-              
-              continue
 
           # check that the forecast year and week are consistent with those in the file name
-          if not (rec[0] == year and rec[1] == week):
+          if not (rec['anno'] == year and rec['settimana'] == week):
             raise Exception(f"Invalid record in line {reader.line_num} of file {csv_file} Forecasting year and week {rec[0]}_{rec[1]} not consistent with file scope {year}_{week}.")
 
-          
           is_valid = True
-          for ck in zip(validation_funcs, rec, file_fields):
-              is_valid = is_valid and eval(ck[0])(ck[1])
-
-              if not is_valid:
-                  raise Exception(f"Invalid record in line {reader.line_num} of file {csv_file} Value {ck[1]} not acceptable for field {ck[2]}.")
+          for ck in zip(validation_funcs, file_fields):
+             is_valid = is_valid and eval (ck[0])(rec[ck[1]])
+             if not is_valid:
+                raise Exception(f"Invalid record in line {reader.line_num} of file {csv_file} Value {rec[ck[1]]} not acceptable for field {ck[1]}.")
 
     return 'OK'
