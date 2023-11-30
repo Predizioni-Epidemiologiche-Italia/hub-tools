@@ -1,8 +1,9 @@
 import os
 import json
 
+    
 
-def storeForecasts (forecasts):
+def storeForecasts (forecasts, isEnsemble = False):
            
     team = os.path.basename(os.path.split(forecasts[0])[0]).split('-')[0]
     if not team:
@@ -24,7 +25,7 @@ def storeForecasts (forecasts):
             model_entry["changes"].append(forecast)
 
     if out_data['models']:
-        db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/changes_db.json")
+        db_path = os.path.join(os.getcwd(), "repo/.github/data-storage" + os.path.sep + ("ensemble_db.json" if isEnsemble else "changes_db.json"))
         print(f"DB path: {db_path}")
         updateForecastsJson(db_path, out_data)
     
@@ -68,8 +69,6 @@ def updateForecastsJson(json_file_path, changes):
         # If the file doesn't exist, handle error
         raise Exception(f"Error writing  {json_data} \n to json file: {json_file_path}\n")
         
-
-
 
 def filter_off(files, filtering_path):
     # Filter list maintaining only those files not in the filtering path
@@ -142,14 +141,18 @@ def store(to_store):
     if not fchanges:
         raise Exception(f"Empty commit")
     
-
     model_changes = []
+    ensemble_changes = []
     targetdata_changes = []
     
     # 
     for fchanged in fchanges:
 
-        if fchanged.startswith("previsioni" + os.path.sep):
+        if fchanged.startswith("previsioni" + os.path.sep + "Influcast-Ensemble"  + os.path.sep):
+            # add to ensemble
+            ensemble_changes.append(fchanged)
+
+        elif fchanged.startswith("previsioni" + os.path.sep):
             # save model output
             model_changes.append(fchanged)
 
@@ -164,6 +167,10 @@ def store(to_store):
     if model_changes:
         print (f"{len(model_changes)} changes in model-output")
         storeForecasts(model_changes)
+
+    if ensemble_changes:
+        print (f"{len(ensemble_changes)} changes in hub ensemble")
+        storeForecasts(ensemble_changes, isEnsemble = True)
 
     if targetdata_changes:
         print (f"{len(targetdata_changes)} changes in targetdata")
