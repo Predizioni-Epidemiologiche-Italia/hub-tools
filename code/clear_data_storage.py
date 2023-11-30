@@ -43,9 +43,11 @@ def run(storage_type, not_ingested):
     if storage_type == "previsioni":
         db_path = os.path.join(os.getcwd(), "./repo/.github/data-storage/changes_db.json")
             
+    elif storage_type == "ensemble":
+        db_path = os.path.join(os.getcwd(), "./repo/.github/data-storage/ensemble_db.json")
+
     elif storage_type == "target":
         db_path = os.path.join(os.getcwd(), "./repo/.github/data-storage/target_db.json")
-
     else:
         print("unknown storage_type")
 
