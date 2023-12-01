@@ -232,7 +232,7 @@ def generate_baseline_forecast_fullpipeline(season,
 
 # get date
 iso_year, iso_week, _ = date.today().isocalendar()
-week = Week(iso_year, iso_week) - 1
+week = Week(iso_year, iso_week) - 2
 
 # compute quantile baseline
 baseline_forecast_formatted = pd.DataFrame()
