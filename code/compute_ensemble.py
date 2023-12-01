@@ -1,6 +1,9 @@
 import os
 print(os.getcwd())
-
+print(os.system("ls /home/runner/work/Influcast/Influcast/"))
+print(os.system("ls /home/runner/work/Influcast/Influcast/./repo"))
+print(os.system("ls /home/runner/work/Influcast/Influcast/./repo/Influcast"))
+print(os.system("ls /home/runner/work/Influcast/Influcast/./repo/Influcast/previsioni/"))
 
 import pandas as pd 
 import os 
