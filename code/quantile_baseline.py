@@ -199,8 +199,7 @@ def generate_baseline_forecast_fullpipeline(season,
                                             target_name="incidenza", 
                                             nsamples=1000,
                                             horizon=4,
-                                            symmetrize=True, 
-                                            save_path="./output/"): 
+                                            symmetrize=True): 
     
     # read ground truth data and weeks
     isoweeks = pd.read_csv(f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/previsioni/settimane_{season}.csv")
