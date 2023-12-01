@@ -69,3 +69,7 @@ for region in unique_regions:
 with open(f"./repo/.github/logs/ensemble_members/{year_week}.json", "w") as file:
     json.dump(ensemble_members, file)
 
+
+env_file = os.getenv('GITHUB_OUTPUT')
+with open(env_file, "a") as outenv:
+   outenv.write (f"ensemble_file={year_week}.csv")
