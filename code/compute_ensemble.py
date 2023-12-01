@@ -47,7 +47,6 @@ ensemble_predictions = model_predictions.groupby(["anno", "settimana", "luogo",
                                                   "tipo_valore", "id_valore", 
                                                   "orizzonte"], as_index=False).mean()
 ensemble_predictions.to_csv(f"./repo/previsioni/{team_abbr}-{model_abbr}/{year_week}.csv", index=False)
-                                Influcast-Ensemble
 
 
 unique_horizons = model_predictions.orizzonte.unique()
