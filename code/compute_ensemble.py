@@ -1,6 +1,6 @@
 import os
 print(f"cwd: {os.getcwd()}")
-for root, dirs, files in os.walk(os.getcwd()):
+for root, dirs, files in os.walk(os.path.join(os.getcwd(), 'repo' ) ):
     for dir in dirs:
           print(f"Folder: { dir }")
 
