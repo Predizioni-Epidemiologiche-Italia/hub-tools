@@ -46,7 +46,7 @@ for model in models:
 ensemble_predictions = model_predictions.groupby(["anno", "settimana", "luogo", 
                                                   "tipo_valore", "id_valore", 
                                                   "orizzonte"], as_index=False).mean()
-ensemble_predictions.to_csv(f".../{team_abbr}-{model_abbr}/{year_week}.csv", index=False)
+ensemble_predictions.to_csv(f"./repo/Influcast/previsioni/{team_abbr}-{model_abbr}/{year_week}.csv", index=False)
 
 
 
@@ -67,6 +67,6 @@ for region in unique_regions:
     ensemble_members[0]["regions"].append(temp_dict_reg)
 
 
-with open(f"./ensemble_members/{year_week}.json", "w") as file:
+with open(f"./repo/.github/logs/ensemble_members/{year_week}.json", "w") as file:
     json.dump(ensemble_members, file)
 
