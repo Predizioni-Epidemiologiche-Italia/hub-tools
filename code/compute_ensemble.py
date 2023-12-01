@@ -66,7 +66,7 @@ for region in unique_regions:
     ensemble_members[0]["regions"].append(temp_dict_reg)
 
 
-with open(f"./repo/.github/logs/ensemble_members/{year_week}.json", "w") as file:
+with open(f"./repo/.github/logs/ensemble-members/{year_week}.json", "w") as file:
     json.dump(ensemble_members, file)
 
 
