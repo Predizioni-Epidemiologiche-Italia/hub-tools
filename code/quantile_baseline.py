@@ -249,6 +249,9 @@ for region in basin_ids.keys():
     baseline_forecast_formatted = pd.concat((baseline_forecast_formatted, baseline_reg), ignore_index=False)
 
 
-baseline_forecast_formatted.to_csv(f"../{team_abbr}-{model_abbr}/{week.year}_{week.week}.csv", index=False)
+baseline_forecast_formatted.to_csv(f"./repo/Influcast/previsioni/{team_abbr}-{model_abbr}/{week.year}_{week.week}.csv", index=False)
 
+env_file = os.getenv('GITHUB_OUTPUT')
+with open(env_file, "a") as outenv:
+   outenv.write (f"baseline_file={week.year}_{week.week}.csv")
 
