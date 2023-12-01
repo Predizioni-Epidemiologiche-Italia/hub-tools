@@ -148,7 +148,7 @@ def store(to_store):
     # 
     for fchanged in fchanges:
 
-        if fchanged.startswith("previsioni" + os.path.sep + "Influcast-Ensemble"  + os.path.sep):
+        if fchanged.startswith("previsioni" + os.path.sep + "Influcast-Ensemble"  + os.path.sep) or fchanged.startswith("previsioni" + os.path.sep + "Influcast-quantileBaseline"  + os.path.sep):
             # add to ensemble
             ensemble_changes.append(fchanged)
 
