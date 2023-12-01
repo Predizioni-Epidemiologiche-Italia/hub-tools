@@ -1,10 +1,11 @@
 import os
 print(f"cwd: {os.getcwd()}")
-print(f'root: {os.system("ls /home/runner/work/Influcast/Influcast/")}')
-print(f'repo: {os.system("ls /home/runner/work/Influcast/Influcast/repo")}')
-print(f'Influcast: {os.system("ls /home/runner/work/Influcast/Influcast/repo/Influcast")}')
-print(f'Previsioni: {os.system("ls /home/runner/work/Influcast/Influcast/repo/Influcast/previsioni/")}')
+for root, dirs, files in os.walk(os.getcwd()):
+    for dir in dirs:
+          print(f"Folder: { dir }")
 
+
+              
 import pandas as pd 
 import os 
 import json
