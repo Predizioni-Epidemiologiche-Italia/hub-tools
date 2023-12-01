@@ -1,3 +1,7 @@
+import os
+print(os.getcwd())
+
+
 import pandas as pd 
 import os 
 import json
