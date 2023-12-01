@@ -27,7 +27,7 @@ models = ["CSL_PoliTo-metaFlu",
 
 # compute year_week 
 iso_year, iso_week, _ = date.today().isocalendar()
-week = Week(iso_year, iso_week) - 1
+week = Week(iso_year, iso_week) - 2
 if week.week < 10: 
     year_week = str(week.year) + "_0" + str(week.week)
 else: 
