@@ -25,6 +25,11 @@
 	    "models": ["metaFlu"],
 	    "users": ["CSL-PoliTo"]
 	},
+    	{
+	    "name": "FBK_HE",
+	    "models": ["REST_HE"],
+	    "users": ["andbizz", "GiorgioGuzzetta"]
+    	},
 	{
 	    "name": "TestTeam",
 	    "models": ["TestModel"],
