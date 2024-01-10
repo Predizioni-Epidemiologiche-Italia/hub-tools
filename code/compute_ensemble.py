@@ -23,7 +23,8 @@ models = ["CSL_PoliTo-metaFlu",
           "ISI-GLEAM", 
           "ISI-IPSICast", 
           "Richards_pmf-glm_rich", 
-          "ev_and_modelers-DeepRE"]
+          "ev_and_modelers-DeepRE",
+          "FBK_HE-REST_HE]
 
 # compute year_week 
 iso_year, iso_week, _ = date.today().isocalendar()
