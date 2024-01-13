@@ -82,7 +82,7 @@ class Authenticator () :
         for elem in self.changes :
             year, week = Path(elem).stem.split('_')
 
-            uploading_week = Week.fromstring(year + "W" + week)
+            uploading_week = Week.fromstring(year + "W" + week.zfill(2))
             if uploading_week == reference_isoweek:
                 print ("Submission window ok")
             elif uploading_week < reference_isoweek:
