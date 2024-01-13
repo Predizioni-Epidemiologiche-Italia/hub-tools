@@ -248,8 +248,11 @@ for region in basin_ids.keys():
     
     baseline_forecast_formatted = pd.concat((baseline_forecast_formatted, baseline_reg), ignore_index=False)
 
-
-baseline_forecast_formatted.to_csv(f"./repo/previsioni/{team_abbr}-{model_abbr}/{week.year}_{week.week}.csv", index=False)
+if week.week < 10: 
+    year_week = str(week.year) + "_0" + str(week.week)
+else: 
+    year_week = str(week.year) + "_" + str(week.week)
+baseline_forecast_formatted.to_csv(f"./repo/previsioni/{team_abbr}-{model_abbr}/{year_week}.csv", index=False)
 
 env_file = os.getenv('GITHUB_OUTPUT')
 with open(env_file, "a") as outenv:
