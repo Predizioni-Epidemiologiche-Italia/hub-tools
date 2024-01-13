@@ -56,7 +56,7 @@ def is_in_submit_window (submitting_elem):
     reference_week = Week.withdate(last_friday) - 1
     # get forecasting year and week from the file name
     year_week = submitting_elem.split('/')[-1].split('.')[0].split('_')
-    uploading_week = Week.fromstring(year_week[0] + "W" + year_week[1])
+    uploading_week = Week.fromstring(year_week[0] + "W" + year_week[1].zfill(2))
 
     if uploading_week != reference_week:
         raise RuntimeError ("Forecasting week must be within accepted submission window for round.")
