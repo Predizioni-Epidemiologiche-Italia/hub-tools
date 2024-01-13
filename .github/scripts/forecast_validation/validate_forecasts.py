@@ -32,6 +32,7 @@ def validate_csv_files(file_format, csv_file):
               
         # get forecasting year and week from the file name
         year, week = csv_file.split('/')[-1].split('.')[0].split('_')
+        week = week.zfill(2)
 
         # loop over records
         for rec in reader:
@@ -39,7 +40,7 @@ def validate_csv_files(file_format, csv_file):
 
 
           # check that the forecast year and week are consistent with those in the file name
-          if not (rec['anno'] == year and rec['settimana'] == week):
+          if not (rec['anno'] == year and rec['settimana'].zfill(2) == week):
             raise Exception(f"Invalid record in line {reader.line_num} of file {csv_file} Forecasting year and week {rec[0]}_{rec[1]} not consistent with file scope {year}_{week}.")
 
           is_valid = True
