@@ -43,10 +43,11 @@ def is_in_submit_window (submitting_elem):
     print (f'verifying submission window for {submitting_elem}')
     
     # Calculate last Friday date
-    last_friday = getLastByDay('Friday')
+    last_friday = getLastByDay('Friday').replace(hour=00, minute=00)
 
     # Calculate the current week's Tuesday
-    this_tuesday = last_friday + timedelta(days=4)
+    this_tuesday = (last_friday + timedelta(days=4)).replace(hour=23, minute=59)
+  
 
     # Check if the date is between last Friday and this Thursday
     if not (last_friday <= datetime.today() <= this_tuesday):
