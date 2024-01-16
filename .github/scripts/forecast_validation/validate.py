@@ -49,7 +49,7 @@ def is_in_submit_window (submitting_elem):
     this_tuesday = (last_friday + timedelta(days=4)).replace(hour=23, minute=59)
   
 
-    # Check if the date is between last Friday and this Thursday
+    # Check if the date is between last Friday and this Tuesday
     if not (last_friday <= datetime.today() <= this_tuesday):
         raise RuntimeError ("Submission time must be within accepted submission window for round.")
 
