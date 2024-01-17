@@ -256,5 +256,5 @@ baseline_forecast_formatted.to_csv(f"./repo/previsioni/{team_abbr}-{model_abbr}/
 
 env_file = os.getenv('GITHUB_OUTPUT')
 with open(env_file, "a") as outenv:
-   outenv.write (f"baseline_file={week.year}_{week.week}.csv")
+   outenv.write (f"baseline_file={year_week}.csv")
 
