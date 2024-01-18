@@ -42,15 +42,12 @@ def is_in_submit_window (submitting_elem):
 
     print (f'verifying submission window for {submitting_elem}')
     
-    # Calculate last Friday date
-    last_friday = getLastByDay('Friday').replace(hour=00, minute=00)
-
-    # Calculate the current week's Tuesday
-    this_tuesday = (last_friday + timedelta(days=4)).replace(hour=23, minute=59)
+    # Calculate last Friday and the current week's Tuesday
+    last_friday = getLastByDay('Friday')    
+    this_tuesday = (last_friday + timedelta(days=4))
   
-
     # Check if the date is between last Friday and this Tuesday
-    if not (last_friday <= datetime.today() <= this_tuesday):
+    if not (last_friday.date() <= datetime.today().date() <= this_tuesday.date()):
         raise RuntimeError ("Submission time must be within accepted submission window for round.")
 
     
