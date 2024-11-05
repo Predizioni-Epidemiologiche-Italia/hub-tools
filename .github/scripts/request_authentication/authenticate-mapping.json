@@ -16,11 +16,6 @@
 	    "users": ["nperra"]
 	},
 	{
-	    "name": "Richards_pmf",
-	    "models": ["glm_rich"],
-	    "users": ["fbranda"]
-	},
-	{
 	    "name": "CSL_PoliTo",
 	    "models": ["metaFlu"],
 	    "users": ["CSL-PoliTo"]
