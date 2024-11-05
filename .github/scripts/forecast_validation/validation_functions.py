@@ -3,6 +3,8 @@ import re
 locations = ('IT', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
              '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21')
 
+targets = ('ILI', 'ILI+_FLU_A', 'ILI+_FLU_B')
+
 # def validate_integer(value):
 #     return isinstance(value, int)
 #
@@ -35,7 +37,10 @@ def validate_location(value):
     return value in locations
 
 def validate_horizon(value):
-    return value in ('1', '2', '3', '4')
+    return value in ('-1', '0', '1', '2', '3', '4')
 
 def validate_quantile_label(value):
     return value == 'quantile'
+
+def validate_target (value):
+    return value in targets

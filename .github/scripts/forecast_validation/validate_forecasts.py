@@ -6,7 +6,7 @@ import csv
 reference_file = os.path.join(os.path.dirname(__file__), 'format_reference.json')
 
 from validation_functions import (validate_float, validate_quantile, validate_year, validate_week,
-                                  validate_location, validate_horizon, validate_quantile_label)
+                                  validate_location, validate_horizon, validate_quantile_label, validate_target)
 
 with open(reference_file, "r") as file:
     format_mapping = json.load(file)
@@ -37,7 +37,6 @@ def validate_csv_files(file_format, csv_file):
         # loop over records
         for rec in reader:
           print ("validating record {} ...".format(rec))
-
 
           # check that the forecast year and week are consistent with those in the file name
           if not (rec['anno'] == year and rec['settimana'].zfill(2) == week):

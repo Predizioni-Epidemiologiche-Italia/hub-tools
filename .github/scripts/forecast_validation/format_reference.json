@@ -1,6 +1,6 @@
 {
-    "influcast_flu_forecast": {"fields": ["anno", "settimana", "luogo", "tipo_valore", "id_valore", "orizzonte", "valore"],
+    "influcast_flu_forecast": {"fields": ["anno", "settimana", "luogo", "tipo_valore", "id_valore", "orizzonte", "valore", "target"],
                                "functions": ["validate_year", "validate_week", "validate_location", "validate_quantile_label",
-                                             "validate_quantile", "validate_horizon", "validate_float"]},
+                                             "validate_quantile", "validate_horizon", "validate_float", "validate_target"]},
     "format_2": { "fields": [], "functions": [] }
 }
