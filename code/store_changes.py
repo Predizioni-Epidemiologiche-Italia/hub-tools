@@ -1,6 +1,7 @@
 import os
 import json
-
+from typing import List, Dict
+from pathlib import Path
     
 
 def storeForecasts (forecasts, isEnsemble = False):
@@ -70,10 +71,6 @@ def updateForecastsJson(json_file_path, changes):
         raise Exception(f"Error writing  {json_data} \n to json file: {json_file_path}\n")
         
 
-def filter_off(files, filtering_path):
-    # Filter list maintaining only those files not in the filtering path
-    filtered_list = [f for f in files if not f.startswith(filtering_path + os.path.sep)]    
-    return filtered_list
 
 def get_the_season (file_path, parent_folder):
     folders = os.path.normpath(file_path).split(os.path.sep)
@@ -93,18 +90,77 @@ def get_the_season (file_path, parent_folder):
 
 
 ##
-def storeSurveillance (data, db_file):
+def storeSurveillance (data: List[str], db_file: str):
 
     print ("Storing Surveillance data")
+
+    changes_list = List[Dict]
     
     db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/", db_file)
     print(f"DB path: {db_path}")
 
-    # write changes except those under 'latest' folder
+    # get the season
     season = get_the_season (data[0], "sorveglianza")
-    data = filter_off(data, os.path.join("sorveglianza", season, "latest") )
-    updateJsonData(db_path, data)
 
+    for change in data :
+        target = Path(change).stem.split('-')[2]
+        target_entry = next((item for item in changes_list if item['name'] == target ), None)
+        if target_entry is None:
+            changes_list.append({'name': target, 'changes': [change]})
+        else:
+            target_entry['changes'].append(change)
+
+
+    updateSurveillanceJson(db_path = db_path, season = season, new_items = changes_list)
+
+
+## update Surveillance json db
+## write the season and changes for each target 
+def updateSurveillanceJson(jdb_path: str, season: str, new_items: List[Dict]):
+    print ('Updating surveillance jdb')
+
+    json_data = None
+
+    # Step 1: Read the existing data from the JSON file
+    try:
+        with open (jdb_path, 'r') as fdb:
+            json_data = json.load(fdb)
+            print(f"JSON DB CONTENT: \n{json_data}")
+            
+    except FileNotFoundError:
+        # If the file doesn't exist, handle error
+        raise Exception(f"Json file not found {jdb_path}\n")
+
+
+    if 'season' in json_data:
+        # check that season has not changed, otherwise throw error
+        if json_data['season'] != season:
+            raise Exception(f"Different season data already exist! {json_data['season']} while uploading data relating to {season}\n")
+        
+    else:
+        json_data['season'] = season
+
+    
+    if 'targets' not in json_data:
+        json_data['targets'] = new_items
+    else:
+        
+        #existing_items = json_data['targets']
+
+        for new_item in new_items:
+
+            # look for existing target
+            for item in json_data['targets']:
+                if item['name'] == new_item['name']:
+                    # if exists, add items
+                    item['changes'] += set(new_item['changes']).difference(item['changes'])
+                    break
+
+            else:
+                json_data['targets'].append(new_item)
+        
+        
+        
 
 
 ##
@@ -156,12 +212,12 @@ def store(to_store):
             # save model output
             model_changes.append(fchanged)
 
-        elif fchanged.startswith("sorveglianza" + os.path.sep):
+        elif fchanged.startswith("sorveglianza" + os.path.sep) and not '-latest-' in fchanged:
             # save target-data
             targetdata_changes.append(fchanged)
         else :
             # unknown just discard
-            print ('Unkown file submitted! Skip it')
+            print (f'Unkown or unsupported file submitted {fchanged}! Skip it')
 
 
     if model_changes:
