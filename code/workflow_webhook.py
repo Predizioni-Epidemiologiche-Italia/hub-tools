@@ -137,7 +137,7 @@ def run ():
     json_data = os.getenv("data")
     data_type = os.getenv("data_type")
     wh_secret = os.getenv("webhook_secret")
-    season = os.getenv("season")
+    # season = os.getenv("season")
     wh_url = os.getenv("webhook_url") + ("forecast/" if data_type == 'forecast' else "surveillance/" )
         
     jdata = json.loads(json_data)
@@ -158,9 +158,12 @@ def run ():
     
     if data_type == 'forecast':
         jpayload["forecasts"] = jdata
+    elif data_type == 'surveillance':
+        jpayload["season"] = jdata["season"]
+        jpayload["targets"] = jdata["targets"]
     else:
-        jpayload["season"] = season
-        jpayload["changes"] = jdata["changes"]
+        print (f'Unsupported submission datatype: {data_type}')
+        exit(1)
 
     print (f"### sending: \n{jpayload}\n")
     
