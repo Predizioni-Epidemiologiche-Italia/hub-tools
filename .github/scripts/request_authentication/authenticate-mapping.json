@@ -28,7 +28,7 @@
 	{
 	    "name": "TestTeam",
 	    "models": ["TestModel"],
-	    "users": ["PMi74", "gioco"]
+	    "users": ["PMi74", "gioco", "Chappi74"]
 	}
     ]
 }
