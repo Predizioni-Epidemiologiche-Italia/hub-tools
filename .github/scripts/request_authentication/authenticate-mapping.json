@@ -26,8 +26,8 @@
 	    "users": ["andbizz", "GiorgioGuzzetta"]
     	},
 	{
-	    "name": "UNIPD-NEIDE",
-	    "models": [" SEEIIRS-MCMC"],
+	    "name": "UNIPD_NEIDE",
+	    "models": [" SEEIIRS_MCMC"],
 	    "users": ["marikasartore", "RahaMasoumi", "chiara-poletto"]
 	},
 	{
