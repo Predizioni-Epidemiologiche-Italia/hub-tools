@@ -27,7 +27,7 @@
     	},
 	{
 	    "name": "UNIPD_NEIDE",
-	    "models": [" SEEIIRS_MCMC"],
+	    "models": ["SEEIIRS_MCMC"],
 	    "users": ["marikasartore", "RahaMasoumi", "chiara-poletto"]
 	},
 	{
