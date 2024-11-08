@@ -26,6 +26,11 @@
 	    "users": ["andbizz", "GiorgioGuzzetta"]
     	},
 	{
+	    "name": "UNIPD-NEIDE",
+	    "models": [" SEEIIRS-MCMC"],
+	    "users": ["marikasartore", "RahaMasoumi", "chiara-poletto"]
+	},
+	{
 	    "name": "TestTeam",
 	    "models": ["TestModel"],
 	    "users": ["PMi74", "gioco", "Chappi74"]
