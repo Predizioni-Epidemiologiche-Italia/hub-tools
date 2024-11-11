@@ -70,37 +70,41 @@ def updateForecastsJson(json_file_path, changes):
         # If the file doesn't exist, handle error
         raise Exception(f"Error writing  {json_data} \n to json file: {json_file_path}\n")
         
-
-
+##
 def get_the_season (file_path, parent_folder):
-    folders = os.path.normpath(file_path).split(os.path.sep)
-
-    # Find season folder
-    season = None
-    path_found = False
+    # Divide il percorso in parti
+    path_parts = file_path.split(os.sep)
     
-    for folder in folders:
-        if folder == parent_folder:
-            path_found = True
-        elif path_found and folder:
-            season = folder
-            break  # when season found
-
-    return season
-
+    # Cerca l'indice del parent_folder nel percorso
+    try:
+        parent_index = path_parts.index(parent_folder)
+        
+        # Check if secondo level subfolder exists
+        if parent_index + 2 < len(path_parts):
+            return path_parts[parent_index + 2]
+        else:
+            return None  # If there is no second level subfolder 
+        
+    except ValueError:
+        return None  # if parent_folder does not exists 
+    
 
 ##
 def storeSurveillance (data: List[str], db_file: str):
 
     print ("Storing Surveillance data")
 
-    changes_list = List[Dict]
+    changes_list = []
     
     db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/", db_file)
     print(f"DB path: {db_path}")
 
     # get the season
     season = get_the_season (data[0], "sorveglianza")
+
+    if season is None:
+         # If can not find the season raise an exception
+        raise Exception(f"Error parsing surveillance path {data[0]} \n. Season not found\n")
 
     for change in data :
         target = Path(change).stem.split('-')[2]
@@ -111,7 +115,7 @@ def storeSurveillance (data: List[str], db_file: str):
             target_entry['changes'].append(change)
 
 
-    updateSurveillanceJson(db_path = db_path, season = season, new_items = changes_list)
+    updateSurveillanceJson(jdb_path = db_path, season = season, new_items = changes_list)
 
 
 ## update Surveillance json db
@@ -159,10 +163,15 @@ def updateSurveillanceJson(jdb_path: str, season: str, new_items: List[Dict]):
             else:
                 json_data['targets'].append(new_item)
         
-        
-        
-
-
+    try:
+        with open(jdb_path, 'w') as fdb:
+            json.dump(json_data, fdb, indent=4)
+    except:
+        # If the file doesn't exist, handle error
+        raise Exception(f"Error writing  {json_data} \n to json file: {jdb_path}\n")
+    
+    
+    
 ##
 def updateJsonData (json_file_path, changes):
 
