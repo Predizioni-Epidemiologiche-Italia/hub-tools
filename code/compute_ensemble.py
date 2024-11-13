@@ -24,7 +24,8 @@ models = ["CSL_PoliTo-metaFlu",
           "ISI-IPSICast", 
           "Richards_pmf-glm_rich", 
           "ev_and_modelers-DeepRE",
-          "FBK_HE-REST_HE"]
+          "FBK_HE-REST_HE", 
+          "UNIPD_NEIDE-SEEIIRS_MCMC"]
 
 # compute year_week 
 iso_year, iso_week, _ = date.today().isocalendar()
@@ -34,7 +35,6 @@ if week.week < 10:
 else: 
     year_week = str(week.year) + "_" + str(week.week)
 
-#year_week = "2023_46"
 model_predictions = pd.DataFrame() 
 for model in models: 
     try: 
@@ -46,25 +46,32 @@ for model in models:
 
 ensemble_predictions = model_predictions.groupby(["anno", "settimana", "luogo", 
                                                   "tipo_valore", "id_valore", 
-                                                  "orizzonte"], as_index=False).mean()
+                                                  "orizzonte", "target"], as_index=False).mean()
 ensemble_predictions.to_csv(f"./repo/previsioni/{team_abbr}-{model_abbr}/{year_week}.csv", index=False)
 
 
 unique_horizons = model_predictions.orizzonte.unique()
 unique_regions = model_predictions.luogo.unique()
+unique_targets = model_predictions.target.unique()
 
-ensemble_members = [{"regions": []}]
+ensemble_members = [{"target": []}]
+for target in unique_targets:
+    temp_dict_target = {}
+    temp_dict_target["id"] = target  
+    temp_dict_target["regions"] = []  
 
-for region in unique_regions:
-    temp_dict_reg = {}
-    temp_dict_reg["id"] = region
-    temp_dict_reg["members"] = []
-    for horizon in unique_horizons:
-        temp_dict_reg["members"].append({"horizon": int(horizon), 
-                                         "models": list(model_predictions.loc[(model_predictions.luogo == region) & \
-                                                                              (model_predictions.orizzonte == horizon)].model.unique())})
-        
-    ensemble_members[0]["regions"].append(temp_dict_reg)
+    for region in unique_regions:
+        temp_dict_reg = {}
+        temp_dict_reg["id"] = region
+        temp_dict_reg["members"] = []
+        for horizon in unique_horizons:
+            temp_dict_reg["members"].append({"horizon": int(horizon), 
+                                             "models": list(model_predictions.loc[(model_predictions.luogo == region) & \
+                                                                                  (model_predictions.orizzonte == horizon) & \
+                                                                                  (model_predictions.target == target)].model.unique())})
+        temp_dict_target["regions"].append(temp_dict_reg)
+              
+    ensemble_members[0].append(temp_dict_target)
 
 
 with open(f"./repo/.github/logs/ensemble-members/{year_week}.json", "w") as file:
