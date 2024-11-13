@@ -18,7 +18,7 @@
 	{
 	    "name": "CSL_PoliTo",
 	    "models": ["metaFlu"],
-	    "users": ["CSL-PoliTo"]
+	    "users": ["CSL-PoliTo", "Eli-13"]
 	},
     	{
 	    "name": "FBK_HE",
