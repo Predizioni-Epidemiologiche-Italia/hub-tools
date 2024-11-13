@@ -7,7 +7,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--season')
-parser.add_argument('--target_name', default="incidenza")
+parser.add_argument('--targets', default="ILI ILI+_FLU_A ILI+_FLU_B")
+parser.add_argument('--measure', default="incidenza")
 parser.add_argument('--symmetrize', default=True)
 parser.add_argument('--nsamples', default=10000)
 parser.add_argument('--horizon', default=4)
@@ -16,15 +17,15 @@ parser.add_argument('--model_abbr', default="quantileBaseline")
 
 args = parser.parse_args()
 season = str(args.season)
+targets = str(args.targets)
 horizon = int(args.horizon)
 symmetrize = bool(args.symmetrize)
 nsamples = int(args.nsamples)
 team_abbr = str(args.team_abbr)
 model_abbr = str(args.model_abbr)
-target_name = str(args.target_name)
+measure = str(args.measure)
 
 
-path = f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/sorveglianza/{season}/latest/"
 
 basin_ids = {'italia': "IT",
             'abruzzo': "01",
@@ -163,6 +164,7 @@ def format_file(anno_forecast,
                 settimana_forecast,
                 data_forecast,
                 basin_id,
+                target,
                 quantiles = [0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3,
                              0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 
                              0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99]):
@@ -188,6 +190,7 @@ def format_file(anno_forecast,
                                       "id_valore": id_valore, 
                                       "orizzonte": orizzonte, 
                                       "valore": valore})
+    df_formatted ['target'] = target
 
     return df_formatted
 
@@ -196,20 +199,25 @@ def generate_baseline_forecast_fullpipeline(season,
                                             year_forecast, 
                                             week_forecast, 
                                             basin_name,
-                                            target_name="incidenza", 
+                                            target,
+                                            measure="incidenza", 
                                             nsamples=1000,
                                             horizon=4,
                                             symmetrize=True): 
     
     # read ground truth data and weeks
-    isoweeks = pd.read_csv(f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/previsioni/settimane_{season}.csv")
+    target_folder = 'ILI+_FLU' if target.startswith('ILI+_FLU') else 'ILI'
+
+    path = f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/sorveglianza/{target_folder}/{season}/latest/"
+
+    isoweeks = pd.read_csv(f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/supporting-files/settimane_{season}.csv")
     truth_data = pd.read_csv(os.path.join(path, basin_name + "-latest.csv"))
 
     if truth_data.shape[0] <= 1: 
         return pd.DataFrame()
     
     # generate baseline forecast
-    baseline_forecast = generate_baseline_quantile_forecast(training_data=truth_data[target_name].values, 
+    baseline_forecast = generate_baseline_quantile_forecast(training_data=truth_data[measure].values, 
                                                             nsamples=nsamples, 
                                                             horizon=horizon, 
                                                             symmetrize=symmetrize)
@@ -224,7 +232,8 @@ def generate_baseline_forecast_fullpipeline(season,
     # format file
     baseline_forecast_formatted = format_file(anno_forecast=year_forecast, 
                                               settimana_forecast=week_forecast,
-                                              data_forecast=baseline_forecast, 
+                                              data_forecast=baseline_forecast,
+                                              target=target, 
                                               basin_id=basin_ids[basin_name])
     return baseline_forecast_formatted
 
@@ -233,20 +242,25 @@ def generate_baseline_forecast_fullpipeline(season,
 iso_year, iso_week, _ = date.today().isocalendar()
 week = Week(iso_year, iso_week) - 2
 
+target_list = targets.split(' ')
+
 # compute quantile baseline
 baseline_forecast_formatted = pd.DataFrame()
-for region in basin_ids.keys():
-    baseline_reg = generate_baseline_forecast_fullpipeline(
-                                            season=season, 
-                                            year_forecast=week.year, 
-                                            week_forecast=week.week, 
-                                            basin_name=region,
-                                            target_name=target_name, 
-                                            nsamples=nsamples,
-                                            horizon=horizon,
-                                            symmetrize=symmetrize)
-    
-    baseline_forecast_formatted = pd.concat((baseline_forecast_formatted, baseline_reg), ignore_index=False)
+
+for target in target_list:
+    for region in basin_ids.keys():
+        baseline_reg = generate_baseline_forecast_fullpipeline(
+                                                season=season, 
+                                                year_forecast=week.year, 
+                                                week_forecast=week.week, 
+                                                basin_name=region,
+                                                target=target,
+                                                measure=measure, 
+                                                nsamples=nsamples,
+                                                horizon=horizon,
+                                                symmetrize=symmetrize)
+        
+        baseline_forecast_formatted = pd.concat((baseline_forecast_formatted, baseline_reg), ignore_index=False)
 
 if week.week < 10: 
     year_week = str(week.year) + "_0" + str(week.week)
