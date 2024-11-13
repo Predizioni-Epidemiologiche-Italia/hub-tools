@@ -206,7 +206,7 @@ def generate_baseline_forecast_fullpipeline(season,
                                             symmetrize=True): 
     
     # read ground truth data and weeks
-    target_folder = 'ILI+_FLU' if target.startswith('ILI+_FLU') else 'ILI'
+    target_folder = 'ILI+_FLU' if target.startswith('ILI+_FLU') else target
 
     path = f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/sorveglianza/{target_folder}/{season}/latest/"
 
