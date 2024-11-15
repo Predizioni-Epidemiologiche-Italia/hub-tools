@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--hub_path')
 args = parser.parse_args()
 
-horizon_range = [1,2,3,4]
+horizon_range = [-1,0,1,2,3,4]
 
 # read last file
 df = pd.read_csv(os.path.join(args.hub_path, "supporting-files/forecasting_weeks.csv"))
