@@ -2,7 +2,7 @@
     "teams": [
 	{
 	    "name": "ISI",
-	    "models": ["FluABCaster", "IPSICast", "GLEAM"],
+	    "models": ["FluABCaster", "FluBcast", "IPSICast", "GLEAM"],
 	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino", "luca-rossi-it"]
 	},
 	{
