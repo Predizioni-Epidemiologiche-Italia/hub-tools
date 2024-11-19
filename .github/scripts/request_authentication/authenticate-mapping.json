@@ -13,7 +13,7 @@
 	{
 	    "name": "EpiQMUL",
 	    "models": ["SEIR_QMUL", "ARIMA_QMUL"],
-	    "users": ["nperra"]
+	    "users": ["nperra", "Jadecoool"]
 	},
 	{
 	    "name": "CSL_PoliTo",
