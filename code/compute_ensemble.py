@@ -46,9 +46,14 @@ for model in models:
     except: 
         print("Not found: ", model)
 
-ensemble_predictions = model_predictions.groupby(["anno", "settimana", "luogo", 
-                                                  "tipo_valore", "id_valore", 
-                                                  "orizzonte", "target"], as_index=False).mean()
+# ensemble_predictions = model_predictions.groupby(["anno", "settimana", "luogo", 
+#                                                   "tipo_valore", "id_valore", 
+#                                                   "orizzonte", "target"], as_index=False).mean()
+
+ensemble_predictions = model_predictions.groupby(["anno", "settimana", "luogo",
+                                                  "tipo_valore", "id_valore",
+                                                  "orizzonte", "target"], as_index=False).mean(numeric_only=True)
+
 ensemble_predictions.to_csv(f"./repo/previsioni/{team_abbr}-{model_abbr}/{year_week}.csv", index=False)
 
 
