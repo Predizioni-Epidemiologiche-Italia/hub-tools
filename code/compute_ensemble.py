@@ -78,7 +78,7 @@ for target in unique_targets:
                                                                                   (model_predictions.target == target)].model.unique())})
         temp_dict_target["regions"].append(temp_dict_reg)
               
-    ensemble_members[0].append(temp_dict_target)
+    ensemble_members[0]["target"].append(temp_dict_target)
 
 
 with open(f"./repo/.github/logs/ensemble-members/{year_week}.json", "w") as file:
