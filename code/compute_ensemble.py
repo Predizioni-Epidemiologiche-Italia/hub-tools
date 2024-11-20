@@ -16,13 +16,15 @@ team_abbr = str(args.team_abbr)
 
 path = "https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/previsioni/"
 
-models = ["CSL_PoliTo-metaFlu", 
+models = ["comunipd-mobnetSI2R",
+          "CSL_PoliTo-metaFlu", 
           "EpiQMUL-ARIMA_QMUL", 
-          "EpiQMUL-SEIR_QMUL", 
+          "EpiQMUL-SEIR_QMUL",
+          "EpiQMUL-SEIRaugment_QMUL", 
           "ISI-FluABCaster", 
+          "ISI-FluBcast",
           "ISI-GLEAM", 
           "ISI-IPSICast", 
-          "Richards_pmf-glm_rich", 
           "ev_and_modelers-DeepRE",
           "FBK_HE-REST_HE", 
           "UNIPD_NEIDE-SEEIIRS_MCMC"]
