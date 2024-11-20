@@ -210,7 +210,7 @@ def generate_baseline_forecast_fullpipeline(season,
 
     path = f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/sorveglianza/{target_folder}/{season}/latest/"
 
-    print('Path: ', os.path.join(path, basin_name + "-latest.csv"))
+    print('Path: ', os.path.join(path, basin_name + "-latest-" + target + ".csv"))
 
     isoweeks = pd.read_csv(f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/supporting-files/settimane_{season}.csv")
     truth_data = pd.read_csv(os.path.join(path, basin_name + "-latest.csv"))
