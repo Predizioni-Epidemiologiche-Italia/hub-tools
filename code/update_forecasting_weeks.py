@@ -7,9 +7,14 @@ import argparse
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--hub_path')
+parser.add_argument('--season', type=str, default="2024-2025", help='Season')
+parser.add_argument('--horizon_range', type=int, nargs='+', default=[-1, 0, 1, 2, 3, 4], help='Horizon range')
+
 args = parser.parse_args()
 
-horizon_range = [-1,0,1,2,3,4]
+# get input parameters
+season = args.season
+horizon_range = args.horizon_range
 
 # read last file
 df = pd.read_csv(os.path.join(args.hub_path, "supporting-files/forecasting_weeks.csv"))
@@ -40,9 +45,9 @@ df_forecasting_weeks = pd.DataFrame(data={"year": year,
                                           "horizon": horizons, 
                                           "horizon_end_date": horizon_end_dates, 
                                           "is_latest": is_latest, 
-                                          "forecast_round": forecast_round})
+                                          "forecast_round": forecast_round, 
+                                          "season": season})
 # last format and concat
 df["is_latest"] = False 
 df_final = pd.concat((df_forecasting_weeks, df))
 df_final.to_csv(os.path.join(args.hub_path, "supporting-files/forecasting_weeks.csv"), index=False)
-
