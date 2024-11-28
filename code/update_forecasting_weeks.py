@@ -16,8 +16,10 @@ args = parser.parse_args()
 season = args.season
 horizon_range = args.horizon_range
 
+fw_file_path = os.path.join(args.hub_path, "supporting-files/forecasting_weeks.csv")
+
 # read last file
-df = pd.read_csv(os.path.join(args.hub_path, "supporting-files/forecasting_weeks.csv"))
+df = pd.read_csv(fw_file_path)
 
 # get year, week of last observation
 year_last, week_last = df.loc[df.is_latest == True][["year", "week"]].iloc[0]
@@ -50,4 +52,4 @@ df_forecasting_weeks = pd.DataFrame(data={"year": year,
 # last format and concat
 df["is_latest"] = False 
 df_final = pd.concat((df_forecasting_weeks, df))
-df_final.to_csv(os.path.join(args.hub_path, "supporting-files/forecasting_weeks.csv"), index=False)
+df_final.to_csv(fw_file_path, index=False)
