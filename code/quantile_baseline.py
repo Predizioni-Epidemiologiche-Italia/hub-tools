@@ -26,7 +26,7 @@ model_abbr = str(args.model_abbr)
 measure = str(args.measure)
 
 
-
+basin_ids_plus = {'italia': "IT"}
 basin_ids = {'italia': "IT",
             'abruzzo': "01",
             'basilicata': "02",
@@ -250,7 +250,10 @@ target_list = targets.split(' ')
 baseline_forecast_formatted = pd.DataFrame()
 
 for target in target_list:
-    for region in basin_ids.keys():
+
+    regions = basin_ids.keys() if target == "ILI" else basin_ids_plus.keys()
+
+    for region in regions:
         baseline_reg = generate_baseline_forecast_fullpipeline(
                                                 season=season, 
                                                 year_forecast=week.year, 
