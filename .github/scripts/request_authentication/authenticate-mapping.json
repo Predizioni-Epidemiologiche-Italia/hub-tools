@@ -23,7 +23,7 @@
     	{
 	    "name": "FBK_HE",
 	    "models": ["REST_HE"],
-	    "users": ["andbizz", "GiorgioGuzzetta"]
+	    "users": ["andbizz", "GiorgioGuzzetta", "tommaso-bertola"]
     	},
 	{
 	    "name": "UNIPD_NEIDE",
