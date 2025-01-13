@@ -71,7 +71,9 @@ class Authenticator () :
 
         for team in teams:
             # Look for the user
+            print(f"_authenticateUser - checking team: {team}")
             if self.user in team.get("users", []):
+                print(f"_authenticateUser - user found")
                 self.validated.append((team.get("name"), team.get("models", [])))
 
     
