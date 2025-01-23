@@ -64,7 +64,6 @@ def is_in_submit_window (submitting_elem):
 
 def run ():
 
-    env_file = os.getenv('GITHUB_OUTPUT')    
     to_validate = os.getenv("changed_files")
 
     to_validate = to_validate.split(" ")
@@ -78,12 +77,14 @@ def run ():
 
             # then verify that forma is valid
             v.validate_csv_files("influcast_flu_forecast", elem)
-            outputResults()
 
         except Exception as e:
             outputResults(False, str(e))
-            break    
+            sys.exit()    
     
+    # Finally save success 
+    outputResults()
+
 
 if __name__ == "__main__":
     print ("### Testing tools_validate script")
