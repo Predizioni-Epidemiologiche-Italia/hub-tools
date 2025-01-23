@@ -3,7 +3,7 @@
 	{
 	    "name": "ISI",
 	    "models": ["FluABCaster", "FluBcast", "IPSICast", "GLEAM"],
-	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino", "luca-rossi-it", "Chappi74"]
+	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino", "luca-rossi-it"]
 	},
 	{
 	    "name": "ev_and_modelers",
