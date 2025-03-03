@@ -2,74 +2,54 @@ import os
 import json
 from typing import List, Dict
 from pathlib import Path
+from collections import defaultdict
     
 
-def storeForecasts (forecasts, isEnsemble = False):
-           
-    team = os.path.basename(os.path.split(forecasts[0])[0]).split('-')[0]
-    if not team:
-     raise Exception(f"invalid input data  {forecasts}\n")
+def process_csv_paths(csv_paths, isEnsemble = False):
 
-    out_data = {}    
-    out_data['team'] = team
-    out_data['models'] = []
+    db_path = os.path.join(os.getcwd(), "repo/.github/data-storage" + os.path.sep + ("ensemble_db.json" if isEnsemble else "changes_db.json"))
 
-    for forecast in forecasts:
-
-        #get the model name from path
-        model = tuple(os.path.basename(os.path.split(forecast)[0]).split('-'))[1]
-
-        model_entry = next((item for item in out_data['models'] if item["model"] == model), None)
-        if model_entry is None:
-            out_data['models'].append({"model" : model, "changes": [forecast]})            
-        else:
-            model_entry["changes"].append(forecast)
-
-    if out_data['models']:
-        db_path = os.path.join(os.getcwd(), "repo/.github/data-storage" + os.path.sep + ("ensemble_db.json" if isEnsemble else "changes_db.json"))
-        print(f"DB path: {db_path}")
-        updateForecastsJson(db_path, out_data)
-    
-
-def updateForecastsJson(json_file_path, changes):
-
-    json_data = None
-
-    team = changes.get("team")
-    n_entries = changes.get("models")
-
-    # Step 1: Read the existing data from the JSON file
-    try:
-        with open (json_file_path, 'r') as fdb:
-            json_data = json.load(fdb)            
-    except FileNotFoundError:
-        # If the file doesn't exist, handle error
-        raise Exception(f"Json file not found {json_file_path}\n")
-
-    # Check if the "team" key exists and is a list
-    if team not in json_data:
-        # if brand new, just save commits
-        json_data[team] = n_entries
-
+    # Caricare dati esistenti se il file changes.json esiste
+    if os.path.exists(db_path):
+        with open(db_path, "r") as json_file:
+            try:
+                data = json.load(json_file)
+            except json.JSONDecodeError:
+                data = {}
     else:
-        #get the list of previous saved data for this team
-        j_records = json_data[team]
-
-        for entry in n_entries:
-                
-            j_model = [j_record for j_record in j_records if j_record.get("model") == entry.get("model")]
-            if j_model == [] :
-                j_records.append(entry)
+        data = {}
+    
+    # Convertire in defaultdict per facilitare gli aggiornamenti
+    data = defaultdict(list, data)
+    
+    for path in csv_paths:
+        try:
+            # Estrarre informazioni dal path
+            parts = path.split('/')
+            filename = parts[-1]
+            team_model = parts[1]
+            team_name, model_name = team_model.split('-')
+            
+            # Controlla se il modello esiste già per il team
+            existing_models = {entry["model"]: entry for entry in data[team_name]}
+            
+            if model_name in existing_models:
+                if path not in existing_models[model_name]["changes"]:
+                    existing_models[model_name]["changes"].append(path)
             else:
-                j_model[0]["changes"] += set(entry["changes"]).difference (j_model[0]["changes"])
-
-    try:
-        with open(json_file_path, 'w') as fdb:
-            json.dump(json_data, fdb, indent=4)
-    except:
-        # If the file doesn't exist, handle error
-        raise Exception(f"Error writing  {json_data} \n to json file: {json_file_path}\n")
+                data[team_name].append({
+                    "model": model_name,
+                    "changes": [path]
+                })
         
+        except ValueError:
+            print(f"Errore nel parsing del path: {path}")
+    
+    # Scrittura su file JSON aggiornato
+    with open(db_path, "w") as json_file:
+        json.dump(data, json_file, indent=4)
+
+
 ##
 def get_the_season (file_path, parent_folder):
     # Divide il percorso in parti
@@ -231,11 +211,11 @@ def store(to_store):
 
     if model_changes:
         print (f"{len(model_changes)} changes in model-output")
-        storeForecasts(model_changes)
+        process_csv_paths(model_changes)
 
     if ensemble_changes:
         print (f"{len(ensemble_changes)} changes in hub ensemble")
-        storeForecasts(ensemble_changes, isEnsemble = True)
+        process_csv_paths(ensemble_changes, isEnsemble = True)
 
     if targetdata_changes:
         print (f"{len(targetdata_changes)} changes in targetdata")
