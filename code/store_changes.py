@@ -201,7 +201,7 @@ def store(to_store):
             # save model output
             model_changes.append(fchanged)
 
-        elif fchanged.startswith("sorveglianza" + os.path.sep) and not '-latest-' in fchanged:
+        elif fchanged.startswith("sorveglianza" + os.path.sep) and not 'latest' in fchanged:
             # save target-data
             targetdata_changes.append(fchanged)
         else :
