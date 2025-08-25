@@ -4,17 +4,11 @@ library("dplyr")
 library("optparse")
 library(data.table)
 
-# arguments 
-# option_list = list(
-#   make_option("--hub_path", type = "character", default = "./", help = "Hub path", metavar = "character"),
-#   make_option("--truth_file_name", type = "character", default = "latest-ILI_incidence.csv", help = "Latest truth file name", metavar = "character"), 
-#   make_option("--subfolders", type = "character", default = "ERVISS,FluID", help = "List of truth data folders", metavar = "character")
-# );   
 
 option_list = list(
   make_option("--hub_path", type = "character", default = "./", help = "Hub path", metavar = "character"),
-  make_option("--targets", type = "character", default = "ILI_incidence,ARI_incidence", help = "Target names", metavar = "character"), 
-  make_option("--subfolders", type = "character", default = "ERVISS,FluID", help = "List of truth data folders", metavar = "character")
+  make_option("--targets", type = "character", default = "ILI,ILI+_FLU_A, ILI+_FLU_B", help = "Target names", metavar = "character"), 
+  make_option("--subfolders", type = "character", default = "ILI,ILI+_FLU", help = "List of truth data folders", metavar = "character")
 );   
 
 # Parse input
