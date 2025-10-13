@@ -47,6 +47,8 @@ merged <- merge_forecast_actuals(forecasts, target_data)
 
 # Read exceptions and exclude them from the merged dataframe (forecast_unit are lists)
 keys <- c("target", "location", "horizon_end_date", "horizon", "model", "forecast_week")
+
+exceptions_path = file.path("configs", "exceptions.csv")
 exceptions <- read.csv("exceptions.csv", stringsAsFactors = FALSE)
 # Make types consistent with merged
 exceptions <- exceptions %>%
