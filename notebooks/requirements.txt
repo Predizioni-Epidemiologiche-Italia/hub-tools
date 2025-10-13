@@ -1,0 +1,8 @@
+jupyter
+nbconvert
+ipykernel
+pandas
+numpy
+matplotlib
+pillow
+seaborn
