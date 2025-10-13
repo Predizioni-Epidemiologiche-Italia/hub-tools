@@ -4,6 +4,8 @@ library(dplyr)
 # source("forecast_utils.R")
 
 
+# Add parameters for previsioni_dir, supporting_dir, sorveglianza_dir
+
 
 # ---- Imposta working directory robusto ----
 suppressMessages({
@@ -28,16 +30,16 @@ source(forecast_utils_path)
 
 # List all models and weeks
 
-models <- list_model_names()
-weeks <- get_season_weeks("2024-2025")
+models <- list_model_names(previsioni_dir = "data/previsioni")
+weeks <- get_season_weeks("2024-2025", supporting_dir = "data/supporting-files")
 
 # Import forecasts
-forecasts <- read_all_forecasts(models, weeks)
+forecasts <- read_all_forecasts(models, weeks, previsioni_dir = "data/previsioni")
 
 # Import actual data
-ili_latest <- read_all_actuals("2024-2025", "ILI", regions)
-ili_plusA_latest <- read_all_actuals("2024-2025", "ILI+_FLU_A", regions)
-ili_plusB_latest <- read_all_actuals("2024-2025", "ILI+_FLU_B", regions)
+ili_latest <- read_all_actuals("2024-2025", "ILI", regions, sorveglianza_dir = "data/sorveglianza")
+ili_plusA_latest <- read_all_actuals("2024-2025", "ILI+_FLU_A", regions, sorveglianza_dir = "data/sorveglianza")
+ili_plusB_latest <- read_all_actuals("2024-2025", "ILI+_FLU_B", regions, sorveglianza_dir = "data/sorveglianza")
 target_data <- rbind(ili_latest, ili_plusA_latest, ili_plusB_latest)
 
 # Merge forecasts and actual data
