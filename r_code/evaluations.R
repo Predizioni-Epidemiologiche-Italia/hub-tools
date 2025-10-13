@@ -49,7 +49,14 @@ merged <- merge_forecast_actuals(forecasts, target_data)
 keys <- c("target", "location", "horizon_end_date", "horizon", "model", "forecast_week")
 
 exceptions_path = file.path("configs", "exceptions.csv")
-exceptions <- read.csv("exceptions.csv", stringsAsFactors = FALSE)
+if (file.exists(exceptions_path)) {
+  message(sprintf("Leggo exceptions da: %s", exceptions_path))
+  exceptions <- read.csv(exceptions_path, stringsAsFactors = FALSE, check.names = FALSE)
+} else {
+  warning(sprintf("File exceptions NON trovato: %s — procedo senza.", exceptions_path))
+  exceptions <- NULL
+}
+# exceptions <- read.csv("exceptions.csv", stringsAsFactors = FALSE)
 # Make types consistent with merged
 exceptions <- exceptions %>%
   mutate(
