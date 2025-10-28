@@ -7,7 +7,7 @@ import argparse
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--hub_path')
-parser.add_argument('--season', type=str, default="2024-2025", help='Season')
+parser.add_argument('--season', type=str, default="2025-2026", help='Season')
 parser.add_argument('--horizon_range', type=int, nargs='+', default=[-1, 0, 1, 2, 3, 4], help='Horizon range')
 
 args = parser.parse_args()

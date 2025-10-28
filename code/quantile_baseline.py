@@ -7,7 +7,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--season')
-parser.add_argument('--targets', default="ILI ILI+_FLU_A ILI+_FLU_B")
+parser.add_argument('--targets', default="ARI ARI+_FLU_A ARI+_FLU_B")
 parser.add_argument('--measure', default="incidenza")
 parser.add_argument('--symmetrize', default=True)
 parser.add_argument('--nsamples', default=10000)
@@ -206,7 +206,7 @@ def generate_baseline_forecast_fullpipeline(season,
                                             symmetrize=True): 
     
     # read ground truth data and weeks
-    target_folder = 'ILI+_FLU' if target.startswith('ILI+_FLU') else target
+    target_folder = 'ARI+_FLU' if target.startswith('ARI+_FLU') else target
 
     path = f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/sorveglianza/{target_folder}/{season}/latest/"
 
@@ -251,7 +251,7 @@ baseline_forecast_formatted = pd.DataFrame()
 
 for target in target_list:
 
-    regions = basin_ids.keys() if target == "ILI" else basin_ids_plus.keys()
+    regions = basin_ids.keys() if target == "ARI" else basin_ids_plus.keys()
 
     for region in regions:
         baseline_reg = generate_baseline_forecast_fullpipeline(

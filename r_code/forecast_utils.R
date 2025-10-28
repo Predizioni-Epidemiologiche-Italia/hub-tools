@@ -140,8 +140,8 @@ read_all_actuals <- function(season,
                              week = NULL,
                              sorveglianza_dir = "Influcast-main/sorveglianza",
                              ...) {
-  if (is.null(season) || season == "") stop("season must be provided, e.g. '2024-2025'")
-  if (is.null(target) || target == "") stop("target must be provided, e.g. 'ILI'")
+  if (is.null(season) || season == "") stop("season must be provided, e.g. '2025-2026'")
+  if (is.null(target) || target == "") stop("target must be provided, e.g. 'ARI'")
   if (is.null(regions) || is.null(names(regions)) || length(regions) == 0) {
     stop("regions must be a non-empty named list/vector")
   }
@@ -198,7 +198,7 @@ list_model_names <- function(previsioni_dir = "Influcast-main/previsioni") {
 get_season_weeks <- function(season,
                              supporting_dir = "Influcast-main/supporting-files",
                              csv_name = "forecasting_weeks.csv") {
-  if (is.null(season) || season == "") stop("season must be provided, e.g. '2024-2025'")
+  if (is.null(season) || season == "") stop("season must be provided, e.g. '2025-2026'")
 
   csv_path <- file.path(supporting_dir, csv_name)
   if (!file.exists(csv_path)) {
@@ -262,13 +262,13 @@ read_actual_data <- function(season,
                              regions = NULL,
                              sorveglianza_dir = "Influcast-main/sorveglianza",
                              ...) {
-  if (is.null(season) || season == "") stop("season must be provided, e.g. '2024-2025'")
-  if (is.null(target) || target == "") stop("target must be provided, e.g. 'ILI'")
+  if (is.null(season) || season == "") stop("season must be provided, e.g. '2025-2026'")
+  if (is.null(target) || target == "") stop("target must be provided, e.g. 'ARI'")
   if (is.null(region) || region == "") stop("region must be provided, e.g. 'italia' or 'lombardia'")
 
-  # For ILI+ targets, files live under folder 'ILI+_FLU' and filenames include
-  # the full target (ILI+_FLU_A or ILI+_FLU_B). For others, folder == target.
-  folder_target <- if (grepl("^ILI\\+_FLU", target)) "ILI+_FLU" else target
+  # For ARI+ targets, files live under folder 'ARI+_FLU' and filenames include
+  # the full target (ARI+_FLU_Aor ARI+_FLU_B). For others, folder == target.
+  folder_target <- if (grepl("^ARI\\+_FLU", target)) "ARI+_FLU" else target
   filename_target <- target
 
   base_dir <- file.path(sorveglianza_dir, folder_target, season)

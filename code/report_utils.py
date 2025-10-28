@@ -114,7 +114,7 @@ def plot_performance_by_forecast_week(scores_rel: pd.DataFrame,
 
 
 def plot_performance_by_region(scores_rel: pd.DataFrame, 
-                               target_name: str = "ILI", 
+                               target_name: str = "ARI", 
                                metric: str = "rel_wis",
                                title: str = None, 
                                ax: plt.Axes = None, 

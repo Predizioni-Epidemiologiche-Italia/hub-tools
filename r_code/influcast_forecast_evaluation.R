@@ -7,8 +7,8 @@ library(data.table)
 
 option_list = list(
   make_option("--hub_path", type = "character", default = "./", help = "Hub path", metavar = "character"),
-  make_option("--targets", type = "character", default = "ILI,ILI+_FLU_A, ILI+_FLU_B", help = "Target names", metavar = "character"), 
-  make_option("--subfolders", type = "character", default = "ILI,ILI+_FLU", help = "List of truth data folders", metavar = "character")
+  make_option("--targets", type = "character", default = "ARI,ARI+_FLU_A, ARI+_FLU_B", help = "Target names", metavar = "character"), 
+  make_option("--subfolders", type = "character", default = "ARI,ARI+_FLU", help = "List of truth data folders", metavar = "character")
 );   
 
 # Parse input

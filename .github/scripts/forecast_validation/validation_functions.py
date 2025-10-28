@@ -3,7 +3,7 @@ import re
 locations = ('IT', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
              '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21')
 
-targets = ('ILI', 'ILI+_FLU_A', 'ILI+_FLU_B')
+targets = ('ARI', 'ARI+_FLU_A', 'ARI+_FLU_B')
 
 # def validate_integer(value):
 #     return isinstance(value, int)

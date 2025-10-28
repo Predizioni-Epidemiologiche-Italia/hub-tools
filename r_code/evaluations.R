@@ -31,16 +31,16 @@ source(forecast_utils_path)
 # List all models and weeks
 
 models <- list_model_names(previsioni_dir = "data/previsioni")
-weeks <- get_season_weeks("2024-2025", supporting_dir = "data/supporting-files")
+weeks <- get_season_weeks("2025-2026", supporting_dir = "data/supporting-files")
 
 # Import forecasts
 forecasts <- read_all_forecasts(models, weeks, previsioni_dir = "data/previsioni")
 
 # Import actual data
-ili_latest <- read_all_actuals("2024-2025", "ILI", regions, sorveglianza_dir = "data/sorveglianza")
-ili_plusA_latest <- read_all_actuals("2024-2025", "ILI+_FLU_A", regions, sorveglianza_dir = "data/sorveglianza")
-ili_plusB_latest <- read_all_actuals("2024-2025", "ILI+_FLU_B", regions, sorveglianza_dir = "data/sorveglianza")
-target_data <- rbind(ili_latest, ili_plusA_latest, ili_plusB_latest)
+ari_latest <- read_all_actuals("2025-2026", "ARI", regions, sorveglianza_dir = "data/sorveglianza")
+ari_plusA_latest <- read_all_actuals("2025-2026", "ARI+_FLU_A", regions, sorveglianza_dir = "data/sorveglianza")
+ari_plusB_latest <- read_all_actuals("2025-2026", "ARI+_FLU_B", regions, sorveglianza_dir = "data/sorveglianza")
+target_data <- rbind(ari_latest, ari_plusA_latest, ari_plusB_latest)
 
 # Merge forecasts and actual data
 merged <- merge_forecast_actuals(forecasts, target_data)
