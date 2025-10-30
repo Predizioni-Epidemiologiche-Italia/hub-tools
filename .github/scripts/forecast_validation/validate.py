@@ -73,7 +73,7 @@ def run ():
 
         try:
             # verify if still in the submission window
-            # is_in_submit_window (submitting_elem=elem)
+            is_in_submit_window (submitting_elem=elem)
 
             # then verify that forma is valid
             v.validate_csv_files("influcast_flu_forecast", elem)
