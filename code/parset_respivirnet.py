@@ -169,7 +169,7 @@ if __name__ == "__main__":
     # Get latest week
     latest_week = get_latest_week("./sorveglianza/ARI/", "ARI", season)
 
-    if latest_week is not None or latest_week != week_id:
+    if latest_week is None or latest_week != week_id:
 
         # Extract all tables
         all_dataframes = extract_all_tables(soup)
