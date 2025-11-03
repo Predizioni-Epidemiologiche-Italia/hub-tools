@@ -167,7 +167,7 @@ if __name__ == "__main__":
     print(f"Extracted week info: {week_id} (Year: {year}, Week: {week})")
 
     # Get latest week
-    latest_week = get_latest_week("./Influcast-main/sorveglianza/ARI/", "ARI", season)
+    latest_week = get_latest_week("./sorveglianza/ARI/", "ARI", season)
 
     if latest_week is not None or latest_week != week_id:
 
@@ -180,8 +180,8 @@ if __name__ == "__main__":
         df_italy = parse_italy_data(ari_ita, population_ita)
 
         # Save Italy data (ARI)
-        df_italy.to_csv("./Influcast-main/sorveglianza/ARI/{}/{}-{}-ARI.csv".format(season,"italia", week_id), index=False)
-        df_italy.to_csv("./Influcast-main/sorveglianza/ARI/{}/latest/italia-latest-ARI.csv".format(season), index=False)
+        df_italy.to_csv("./sorveglianza/ARI/{}/{}-{}-ARI.csv".format(season,"italia", week_id), index=False)
+        df_italy.to_csv("./sorveglianza/ARI/{}/latest/italia-latest-ARI.csv".format(season), index=False)
 
         # Parse regions data
         regions_table, regions_population = all_dataframes[1], all_dataframes[4]
@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
         # Save regions data (ARI)
         for region, df_region in regions_dfs.items():
-            latest_file_path = "./Influcast-main/sorveglianza/ARI/{}/latest/{}-latest-ARI.csv".format(season, region)
+            latest_file_path = "./sorveglianza/ARI/{}/latest/{}-latest-ARI.csv".format(season, region)
             if os.path.exists(latest_file_path):
                 # Import latest file for this region 
                 df_latest_region = pd.read_csv(latest_file_path)
@@ -198,8 +198,8 @@ if __name__ == "__main__":
                 # Save week and latest file
             else: 
                 df_latest_region = df_region
-            df_latest_region.to_csv("./Influcast-main/sorveglianza/ARI/{}/latest/{}-latest-ARI.csv".format(season, region), index=False)
-            df_latest_region.to_csv("./Influcast-main/sorveglianza/ARI/{}/{}-{}-ARI.csv".format(season, region, week_id), index=False)
+            df_latest_region.to_csv("./sorveglianza/ARI/{}/latest/{}-latest-ARI.csv".format(season, region), index=False)
+            df_latest_region.to_csv("./sorveglianza/ARI/{}/{}-{}-ARI.csv".format(season, region, week_id), index=False)
 
         # Compute ARI+FLU_A/B data
         df_flu_viruses, df_other_viruses = all_dataframes[5], all_dataframes[6]
@@ -207,8 +207,8 @@ if __name__ == "__main__":
         df_ari_plus_B = compute_ari_plus_df(df_italy, df_flu_viruses, df_other_viruses, "Influenza B", "ARI+_FLU_B")
 
         # Save ARI+FLU_A/B data
-        df_ari_plus_A.to_csv("./Influcast-main/sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_A.csv".format(season, "italia", week_id), index=False)
-        df_ari_plus_A.to_csv("./Influcast-main/sorveglianza/ARI+_FLU/{}/latest/italia-latest-ARI+_FLU_A.csv".format(season), index=False)
-        df_ari_plus_B.to_csv("./Influcast-main/sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_B.csv".format(season, "italia", week_id), index=False)
-        df_ari_plus_B.to_csv("./Influcast-main/sorveglianza/ARI+_FLU/{}/latest/italia-latest-ARI+_FLU_B.csv".format(season), index=False)
+        df_ari_plus_A.to_csv("./sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_A.csv".format(season, "italia", week_id), index=False)
+        df_ari_plus_A.to_csv("./sorveglianza/ARI+_FLU/{}/latest/italia-latest-ARI+_FLU_A.csv".format(season), index=False)
+        df_ari_plus_B.to_csv("./sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_B.csv".format(season, "italia", week_id), index=False)
+        df_ari_plus_B.to_csv("./sorveglianza/ARI+_FLU/{}/latest/italia-latest-ARI+_FLU_B.csv".format(season), index=False)
 
