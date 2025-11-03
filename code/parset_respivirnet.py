@@ -155,22 +155,23 @@ def compute_ari_plus_df(df_italy, df_flu_viruses, df_other_viruses, influenza_st
 # TODO: Fix all paths
 # TODO: Possibily move all functions to a separate file
 if __name__ == "__main__":
-    print("Fetching data...")
-    response = requests.get(BASE_URL)
-    print("Data fetched")
+  print("Fetching data...")
+  response = requests.get(BASE_URL)
+  print("Data fetched")
 
-    # Parse HTML
-    soup = BeautifulSoup(response.content, 'html.parser')
+  # Parse HTML
+  soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Extract week info
-    week_id, year, week = extract_week_info(soup)
-    print(f"Extracted week info: {week_id} (Year: {year}, Week: {week})")
+  # Extract week info
+  week_id, year, week = extract_week_info(soup)
+  print(f"Extracted week info: {week_id} (Year: {year}, Week: {week})")
 
-    # Get latest week
-    latest_week = get_latest_week("./sorveglianza/ARI/", "ARI", season)
+  # Get latest week
+  latest_week = get_latest_week("./sorveglianza/ARI/", "ARI", season)
 
-    if latest_week is None or latest_week != week_id:
 
+  if latest_week is None or latest_week != week_id:
+        print("In the last week if")
         # Extract all tables
         all_dataframes = extract_all_tables(soup)
         print(f"Extracted {len(all_dataframes)} tables")
@@ -201,12 +202,16 @@ if __name__ == "__main__":
             df_latest_region.to_csv("./sorveglianza/ARI/{}/latest/{}-latest-ARI.csv".format(season, region), index=False)
             df_latest_region.to_csv("./sorveglianza/ARI/{}/{}-{}-ARI.csv".format(season, region, week_id), index=False)
 
+        print("Computing ARI+FLU_")
         # Compute ARI+FLU_A/B data
         df_flu_viruses, df_other_viruses = all_dataframes[5], all_dataframes[6]
         df_ari_plus_A = compute_ari_plus_df(df_italy, df_flu_viruses, df_other_viruses, "Influenza A", "ARI+_FLU_A")
         df_ari_plus_B = compute_ari_plus_df(df_italy, df_flu_viruses, df_other_viruses, "Influenza B", "ARI+_FLU_B")
 
+        print("Writing ARI+FLU_")
         # Save ARI+FLU_A/B data
+        wr_path = "./sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_A.csv".format(season, "italia", week_id)
+        print("Writing to " + wr_path)
         df_ari_plus_A.to_csv("./sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_A.csv".format(season, "italia", week_id), index=False)
         df_ari_plus_A.to_csv("./sorveglianza/ARI+_FLU/{}/latest/italia-latest-ARI+_FLU_A.csv".format(season), index=False)
         df_ari_plus_B.to_csv("./sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_B.csv".format(season, "italia", week_id), index=False)
