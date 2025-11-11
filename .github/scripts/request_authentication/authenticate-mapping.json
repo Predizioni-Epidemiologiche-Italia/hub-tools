@@ -38,7 +38,7 @@
 	{
 		"name": "C2S2_Trento",
 		"models":["SIR_INN"],
-		"users": ["martina-rama", "micheletizzoni"]
+		"users": ["martina-rama"]
 	},
 	{
 	    "name": "TestTeam",
