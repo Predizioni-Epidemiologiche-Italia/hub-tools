@@ -36,6 +36,11 @@
 	    "users": ["tommaso-bertola"]
 	},
 	{
+		"name": "C2S2_Trento",
+		"models":["SIR_INN"],
+		"users": ["martina-rama", "micheletizzoni"]
+	},
+	{
 	    "name": "TestTeam",
 	    "models": ["TestModel"],
 	    "users": ["PMi74", "gioco", "Chappi74", "M-7th"]
