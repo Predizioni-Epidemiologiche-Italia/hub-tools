@@ -25,14 +25,14 @@ def compute_year_week(now: datetime) -> tuple[int, int]:
     iso = now.isocalendar()  # (year, week, weekday)
     return iso.year, iso.week
 
-def run_parset(product: str, out_csv: Path, year: int, week: int) -> None:
+def run_parser(product: str, out_csv: Path, year: int, week: int) -> None:
     out_csv.parent.mkdir(parents=True, exist_ok=True)
     if out_csv.exists():
         print(f"[skip] Esiste già: {out_csv}")
         return
     # >>>>> QUI adatta la CLI se necessario <<<<<
     cmd = [
-        sys.executable, "parset_respivirnet.py",
+        sys.executable, "parser_respivirnet.py",
         "--product", product,
         "--out", str(out_csv),
         "--year", str(year),
@@ -56,7 +56,7 @@ def main() -> int:
     for product, base in PRODUCTS:
         out_dir = Path(base) / seas
         out_csv = out_dir / f"{year}_{week:02d}.csv"
-        run_parset(product, out_csv, year, week)
+        run_parser(product, out_csv, year, week)
 
     print("Fetch completato.")
     return 0

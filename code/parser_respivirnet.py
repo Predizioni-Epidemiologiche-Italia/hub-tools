@@ -101,14 +101,15 @@ def parse_regions_data(regions_table, regions_population):
         # create df for this region
         region = region_names[row["Regione-PA"]["Regione-PA"]]
         year_week = row["Settimana"]["Settimana"]
-        
-        df_region = pd.DataFrame({"anno": [year_week.split("-")[0]], 
-                                "settimana": [year_week.split("-")[1]], 
-                                "numero_casi": [row["Totale Casi"]["Totale Casi"]], 
-                                "incidenza": [row["Totale Incidenza"]["Totale Incidenza"]]})
-        df_region["numero_assistiti"] = regions_population.loc[regions_population["Regione-PA"] == row["Regione-PA"]["Regione-PA"]]["Totale Assistiti"].values[0]
-        df_region["target"] = "ARI"
-        regions_dfs[region] = df_region
+
+        if pd.notna(row["Totale Incidenza"]["Totale Incidenza"]):
+            df_region = pd.DataFrame({"anno": [year_week.split("-")[0]], 
+                                      "settimana": [year_week.split("-")[1]], 
+                                      "numero_casi": [row["Totale Casi"]["Totale Casi"]], 
+                                      "incidenza": [row["Totale Incidenza"]["Totale Incidenza"]]})
+            df_region["numero_assistiti"] = regions_population.loc[regions_population["Regione-PA"] == row["Regione-PA"]["Regione-PA"]]["Totale Assistiti"].values[0]
+            df_region["target"] = "ARI"
+            regions_dfs[region] = df_region
     return regions_dfs
 
 
