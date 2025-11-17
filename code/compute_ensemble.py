@@ -21,13 +21,15 @@ models = ["comunipd-mobnetSI2R",
           "EpiQMUL-ARIMA_QMUL", 
           "EpiQMUL-SEIR_QMUL",
           "EpiQMUL-SEIRaugment_QMUL", 
+          "EpiQMUL-EpiQMUL_tabpfnts"
           "ISI-FluABCaster", 
           "ISI-FluBcast",
           "ISI-GLEAM", 
           "ISI-IPSICast", 
           "ev_and_modelers-DeepRE",
           "FBK_HE-REST_HE", 
-          "UNIPD_NEIDE-SEEIIRS_MCMC"]
+          "UNIPD_NEIDE-SEEIIRS_MCMC", 
+          "C2S2_Trento-SIR_INN"]
 
 # compute year_week 
 iso_year, iso_week, _ = date.today().isocalendar()
