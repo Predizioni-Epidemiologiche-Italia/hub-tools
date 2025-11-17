@@ -21,7 +21,7 @@ models = ["comunipd-mobnetSI2R",
           "EpiQMUL-ARIMA_QMUL", 
           "EpiQMUL-SEIR_QMUL",
           "EpiQMUL-SEIRaugment_QMUL", 
-          "EpiQMUL-EpiQMUL_tabpfnts"
+          "EpiQMUL-EpiQMUL_tabpfnts",
           "ISI-FluABCaster", 
           "ISI-FluBcast",
           "ISI-GLEAM", 
