@@ -12,8 +12,8 @@
 	},
 	{
 	    "name": "EpiQMUL",
-	    "models": ["SEIR_QMUL", "ARIMA_QMUL", "SEIRaugment_QMUL"],
-	    "users": ["nperra", "Jadecoool"]
+	    "models": ["SEIR_QMUL", "ARIMA_QMUL", "SEIRaugment_QMUL", "EpiQMUL_tabpfnts"],
+	    "users": ["nperra", "Jadecoool", "DouhanWang"]
 	},
 	{
 	    "name": "CSL_PoliTo",
