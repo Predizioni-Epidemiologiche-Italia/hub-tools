@@ -1,25 +1,3 @@
-regions <- c(italia = "IT",
-             abruzzo = "01",
-             basilicata = "02",
-             calabria = "03",
-             campania = "04",
-             emilia_romagna = "05",
-             friuli_venezia_giulia = "06",
-             lazio = "07",
-             liguria = "08",
-             lombardia = "09",
-             marche = "10",
-             molise = "11",
-             pa_bolzano = "12",
-             pa_trento = "13",
-             piemonte = "14",
-             puglia = "15",
-             sardegna = "16",
-             sicilia = "17",
-             toscana = "18",
-             umbria = "19",
-             valle_d_aosta = "20",
-             veneto = "21")
 
 
 # Build the absolute path to a forecast CSV under Influcast-main/previsioni
@@ -136,7 +114,7 @@ merge_forecast_actuals <- function(forecast_df, actual_df, allowed_horizons = c(
 # Read and concatenate actual surveillance data for all regions
 read_all_actuals <- function(season,
                              target,
-                             regions,
+                             regions = NULL,
                              week = NULL,
                              sorveglianza_dir = "Influcast-main/sorveglianza",
                              ...) {
@@ -265,6 +243,9 @@ read_actual_data <- function(season,
   if (is.null(season) || season == "") stop("season must be provided, e.g. '2025-2026'")
   if (is.null(target) || target == "") stop("target must be provided, e.g. 'ARI'")
   if (is.null(region) || region == "") stop("region must be provided, e.g. 'italia' or 'lombardia'")
+  if (is.null(regions) || is.null(names(regions)) || is.null(regions[[region]])) {
+    stop("'regions' must be a named list/vector and contain an entry for the provided region")
+  }
 
   # For ARI+ targets, files live under folder 'ARI+_FLU' and filenames include
   # the full target (ARI+_FLU_Aor ARI+_FLU_B). For others, folder == target.
@@ -328,10 +309,7 @@ read_actual_data <- function(season,
   keep_names <- setdiff(names(df), intersect(names(df), drop_cols))
   df <- df[, keep_names, drop = FALSE]
 
-  # Add luogo from regions named list
-  if (is.null(regions) || is.null(names(regions)) || is.null(regions[[region]])) {
-    stop("'regions' must be a named list/vector and contain an entry for the provided region")
-  }
+  # Add luogo from regions named list 
   df$luogo <- regions[[region]]
 
   # Add week end date (Sunday of ISO week anno/settimana)

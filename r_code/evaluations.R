@@ -5,6 +5,28 @@ library(dplyr)
 
 
 # Add parameters for previsioni_dir, supporting_dir, sorveglianza_dir
+regions_list <- c(italia = "IT",
+             abruzzo = "01",
+             basilicata = "02",
+             calabria = "03",
+             campania = "04",
+             emilia_romagna = "05",
+             friuli_venezia_giulia = "06",
+             lazio = "07",
+             liguria = "08",
+             lombardia = "09",
+             marche = "10",
+             molise = "11",
+             pa_bolzano = "12",
+             pa_trento = "13",
+             piemonte = "14",
+             puglia = "15",
+             sardegna = "16",
+             sicilia = "17",
+             toscana = "18",
+             umbria = "19",
+             valle_d_aosta = "20",
+             veneto = "21")
 
 
 # ---- Imposta working directory robusto ----
@@ -66,9 +88,9 @@ weeks <- get_season_weeks("2025-2026", supporting_dir = support_dir)
 forecasts <- read_all_forecasts(models, weeks, previsioni_dir = forecasts_dir)
 
 # Import actual data
-ari_latest <- read_all_actuals("2025-2026", "ARI", regions, sorveglianza_dir = surveillance_dir
-ari_plusA_latest <- read_all_actuals("2025-2026", "ARI+_FLU_A", regions, sorveglianza_dir = surveillance_dir)
-ari_plusB_latest <- read_all_actuals("2025-2026", "ARI+_FLU_B", regions, sorveglianza_dir = surveillance_dir)
+ari_latest <- read_all_actuals("2025-2026", "ARI", regions = regions_list, sorveglianza_dir = surveillance_dir)
+ari_plusA_latest <- read_all_actuals("2025-2026", "ARI+_FLU_A", regions = regions_list, sorveglianza_dir = surveillance_dir)
+ari_plusB_latest <- read_all_actuals("2025-2026", "ARI+_FLU_B", regions = regions_list, sorveglianza_dir = surveillance_dir)
 target_data <- rbind(ari_latest, ari_plusA_latest, ari_plusB_latest)
 
 # Merge forecasts and actual data
