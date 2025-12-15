@@ -126,7 +126,7 @@ def plot_performance_by_region(scores_rel: pd.DataFrame,
         scores_regions = scores_regions.groupby(["model", "forecast_week", "location"], as_index=False).mean(numeric_only=True)
 
     scores_regions = scores_regions.groupby(["model", "location"], as_index=False).median(numeric_only=True)
-    scores_pivot = scores_regions.pivot(index="model", columns="location", values="rel_wis")
+    scores_pivot = scores_regions.pivot(index="model", columns="location", values=metric)
 
     # rename regions
     scores_pivot.rename(index=regions, columns=regions, inplace=True)
