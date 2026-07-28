@@ -15,11 +15,24 @@ tramite la variabile d'ambiente AUTHORIZED_USERS_FILE.
 
 Nessuna dipendenza esterna: solo libreria standard.
 
-Uscita:
-  exit code 0  -> nessun errore bloccante (possono esserci warning)
-  exit code 1  -> almeno un errore bloccante (calling_actor non autorizzato,
-                  nessun CSV atteso tra i file modificati, o errori di
-                  validazione sui dati)
+Contratto con il workflow (step id `authenticate`):
+  Lo script scrive su $GITHUB_OUTPUT due output, letti dal workflow per
+  decidere se procedere con l'auto-merge o commentare l'errore sulla PR:
+    authenticate = "success" | "failure"
+    message      = riepilogo (multilinea) degli errori, vuoto se success
+
+  Il job `validate_request` deve SEMPRE completare con successo (exit 0)
+  quando l'output GITHUB_OUTPUT è disponibile (cioè quando lo script gira
+  dentro Actions): i job downstream `on_successful_validation` /
+  `on_validation_failed` usano `if: needs.validate_request.outputs.is_valid
+  == 'true'/'false'` SENZA `always()`/`failure()`, quindi se questo step
+  fallisse (exit != 0) GitHub salterebbe entrambi i job downstream e la PR
+  non riceverebbe alcun commento. L'esito di validazione va quindi
+  comunicato solo tramite l'output `authenticate`, non tramite l'exit code.
+
+  Quando lo script viene eseguito FUORI da Actions (GITHUB_OUTPUT non
+  definita, es. test locali/CI di unit test) l'exit code torna a riflettere
+  l'esito (0 = ok, 1 = errori), per comodità di scripting/test.
 """
 
 from __future__ import annotations
@@ -29,6 +42,7 @@ import json
 import os
 import re
 import sys
+import uuid
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Optional
@@ -128,6 +142,23 @@ class IssueCollector:
         for issue in self.issues:
             print(issue.human())
             print(issue.gh_annotation())
+
+    def summary_message(self) -> str:
+        """Riepilogo human-readable per il campo `message` esposto al workflow
+        (usato per il commento sulla PR in caso di validazione fallita)."""
+        errors = [i for i in self.issues if i.severity == "error"]
+        warnings = [i for i in self.issues if i.severity == "warning"]
+        if not errors and not warnings:
+            return "Validazione completata con successo."
+
+        lines: list[str] = []
+        if errors:
+            lines.append(f"**Errori bloccanti ({len(errors)}):**")
+            lines.extend(f"- {i.file}" + (f":{i.line}" if i.line is not None else "") + f" — {i.message}" for i in errors)
+        if warnings:
+            lines.append(f"**Warning non bloccanti ({len(warnings)}):**")
+            lines.extend(f"- {i.file}" + (f":{i.line}" if i.line is not None else "") + f" — {i.message}" for i in warnings)
+        return "\n".join(lines)
 
 
 # --------------------------------------------------------------------------
@@ -406,6 +437,26 @@ def _validate_cross_horizon_consistency(
 
 
 # --------------------------------------------------------------------------
+# Output verso GitHub Actions (step id: authenticate)
+# --------------------------------------------------------------------------
+
+def write_github_output(authenticate: str, message: str) -> None:
+    """Scrive gli output `authenticate` e `message` su $GITHUB_OUTPUT, se
+    presente (cioè quando lo script gira dentro un job di GitHub Actions)."""
+    output_path = os.environ.get("GITHUB_OUTPUT")
+    if not output_path:
+        return
+    delimiter = f"EOF_{uuid.uuid4().hex}"
+    with open(output_path, "a", encoding="utf-8") as fh:
+        fh.write(f"authenticate={authenticate}\n")
+        fh.write(f"message<<{delimiter}\n{message}\n{delimiter}\n")
+
+
+def running_in_actions() -> bool:
+    return bool(os.environ.get("GITHUB_OUTPUT"))
+
+
+# --------------------------------------------------------------------------
 # Entry point
 # --------------------------------------------------------------------------
 
@@ -416,14 +467,22 @@ def main() -> int:
 
     collector = IssueCollector()
 
+    def finish() -> int:
+        """Riporta l'esito, scrive gli output per il workflow e determina
+        l'exit code (sempre 0 dentro Actions, si veda il docstring del modulo)."""
+        collector.report()
+        success = not collector.has_errors()
+        write_github_output("success" if success else "failure", collector.summary_message())
+        if running_in_actions():
+            return 0
+        return 0 if success else 1
+
     if not calling_actor:
         collector.error("input", "Variabile d'ambiente 'calling_actor' mancante o vuota.")
-        collector.report()
-        return 1
+        return finish()
 
     if not check_authorization(calling_actor, authorized_users_file, collector):
-        collector.report()
-        return 1
+        return finish()
 
     changed_files = parse_changed_files(changed_files_raw)
     influmeter_files = select_influmeter_files(changed_files)
@@ -434,15 +493,21 @@ def main() -> int:
             "Nessun file CSV nel path atteso 'previsioni/influmeter/YYYY_WW.csv' tra i "
             f"file modificati dalla PR. File modificati: {changed_files or '(nessuno)'}",
         )
-        collector.report()
-        return 1
+        return finish()
 
     for path in influmeter_files:
         validate_file(path, collector)
 
-    collector.report()
-    return 1 if collector.has_errors() else 0
+    return finish()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as exc:  # pragma: no cover - salvaguardia per errori inattesi
+        # Anche in caso di bug/eccezione imprevista nello script, comunichiamo
+        # l'esito come "failure" invece di lasciare il job in stato crashed,
+        # così i job downstream del workflow (che dipendono dagli output, non
+        # dall'exit code) possono comunque girare e commentare la PR.
+        write_github_output("failure", f"Errore interno nello script di validazione: {exc}")
+        sys.exit(0 if running_in_actions() else 1)
