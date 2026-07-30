@@ -76,8 +76,8 @@ PROB_COLUMNS = ["p_baseline", "p_low", "p_medium", "p_high", "p_very_high"]
 PROB_SUM_TARGET = 100.0
 PROB_SUM_TOLERANCE = 0.5  # punti percentuali
 
-# Formato data confermato: anno a due cifre, es. 26-07-24 per 2026-07-24
-DATE_FORMAT = "%y-%m-%d"
+# Formato data confermato: anno a quattro cifre, es. 2026-07-24
+DATE_FORMAT = "%Y-%m-%d"
 
 # Soglie del bucket influmeter_index -> colonna di probabilità attesa come massima
 # 0-20 Molto Basso, 20-40 Basso, 40-60 Medio, 60-80 Alto, 80-100 Molto Alto
