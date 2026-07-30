@@ -150,7 +150,41 @@ def updateSurveillanceJson(jdb_path: str, season: str, new_items: List[Dict]):
         # If the file doesn't exist, handle error
         raise Exception(f"Error writing  {json_data} \n to json file: {jdb_path}\n")
     
+
+
+##
+def storeInflumeter (data: List[str], db_file: str)
+    print ("Storing Influmeter data")
+    # db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/", db_file)
+    # print(f"DB path: {db_path}")
+
+    # json_data = None
+
+    # # Step 1: Read the existing data from the JSON file
+    # try:
+    #     with open (db_path, 'r') as fdb:
+    #         json_data = json.load(fdb)
+    #         print(f"JSON DB CONTENT: \n{json_data}")
+            
+    # except FileNotFoundError:
+    #     # If the file doesn't exist, handle error
+    #     raise Exception(f"Json file not found {jdb_path}\n")
+
+    # if 'changes' in json_data:
+
+    # else:
+    #     json_data['changes'] = 
     
+
+
+
+
+
+
+
+
+
+
     
 ##
 def updateJsonData (json_file_path, changes):
@@ -188,6 +222,7 @@ def store(to_store):
     
     model_changes = []
     ensemble_changes = []
+    influmeter_changes = []
     targetdata_changes = []
     
     # 
@@ -196,6 +231,10 @@ def store(to_store):
         if fchanged.startswith("previsioni" + os.path.sep + "Influcast-Ensemble"  + os.path.sep) or fchanged.startswith("previsioni" + os.path.sep + "Influcast-quantileBaseline"  + os.path.sep):
             # add to ensemble
             ensemble_changes.append(fchanged)
+
+        elif fchanged.startswith("previsioni" + os.path.sep + "influmeter"  + os.path.sep):
+            # add to influmeter
+            influmeter_changes.append(fchanged)
 
         elif fchanged.startswith("previsioni" + os.path.sep):
             # save model output
@@ -216,6 +255,10 @@ def store(to_store):
     if ensemble_changes:
         print (f"{len(ensemble_changes)} changes in hub ensemble")
         process_csv_paths(ensemble_changes, isEnsemble = True)
+
+    if influmeter_changes:
+        print (f"{len(influmeter_changes)} changes in hub influmeter")
+        storeInflumeter(influmeter_changes, "target_db.json")
 
     if targetdata_changes:
         print (f"{len(targetdata_changes)} changes in targetdata")
