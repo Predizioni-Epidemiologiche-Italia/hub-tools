@@ -92,8 +92,19 @@ INDEX_BUCKETS = [
 # Path convenzionale dei CSV nel repo dati: previsioni/influmeter/YYYY_WW.csv
 FILE_PATTERN = re.compile(r"^previsioni/influmeter/(?P<year>\d{4})_(?P<week>\d{2})\.csv$")
 
-DEFAULT_AUTHORIZED_USERS_FILE = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "authorized_users.json"
+# DEFAULT_AUTHORIZED_USERS_FILE = os.path.join(
+#     os.path.dirname(os.path.abspath(__file__)), "authorized_users.json"
+# )
+
+# authorized_users.json vive nella cartella "sorella" request_authentication
+# (.github/scripts/request_authentication/), non con questo script
+# (.github/scripts/forecast_validation/), perché è una risorsa di autenticazione
+# condivisa e non specifica della validazione influmeter.
+DEFAULT_AUTHORIZED_USERS_FILE = os.path.normpath(
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "request_authentication", "authorized_users.json",
+    )
 )
 
 
