@@ -90,7 +90,7 @@ INDEX_BUCKETS = [
 ]
 
 # Path convenzionale dei CSV nel repo dati: previsioni/influmeter/YYYY_WW.csv
-FILE_PATTERN = re.compile(r"^previsioni/influmeter/(?P<year>\d{4})_(?P<week>\d{2})\.csv$")
+FILE_PATTERN = re.compile(r"^previsioni/influmeter/(?P<year>\d{4})_(?P<week>\d{2})_influmeter\.csv$")
 
 # DEFAULT_AUTHORIZED_USERS_FILE = os.path.join(
 #     os.path.dirname(os.path.abspath(__file__)), "authorized_users.json"
