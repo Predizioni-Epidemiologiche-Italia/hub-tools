@@ -299,7 +299,7 @@ def store(to_store):
 
     if influmeter_changes:
         print (f"{len(influmeter_changes)} changes in hub influmeter")
-        storeInflumeter(influmeter_changes, "target_db.json")
+        storeInflumeter(influmeter_changes, "influmeter_db.json")
 
     if targetdata_changes:
         print (f"{len(targetdata_changes)} changes in targetdata")
