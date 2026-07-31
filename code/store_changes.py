@@ -153,35 +153,76 @@ def updateSurveillanceJson(jdb_path: str, season: str, new_items: List[Dict]):
 
 
 ##
-def storeInflumeter (data: List[str], db_file: str)
-    print ("Storing Influmeter data")
-    # db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/", db_file)
-    # print(f"DB path: {db_path}")
+"""
+storeInflumeter — persiste l'elenco dei file influmeter modificati/mergiati
+in un file JSON sotto repo/.github/data-storage/<db_file>.
 
-    # json_data = None
+Pensata per essere richiamata da store_changes.py con:
+    storeInflumeter(data=<lista di path/nomi file>, db_file="influmeter_changes.json")
 
-    # # Step 1: Read the existing data from the JSON file
-    # try:
-    #     with open (db_path, 'r') as fdb:
-    #         json_data = json.load(fdb)
-    #         print(f"JSON DB CONTENT: \n{json_data}")
-            
-    # except FileNotFoundError:
-    #     # If the file doesn't exist, handle error
-    #     raise Exception(f"Json file not found {jdb_path}\n")
+Formato del db (semplice, come richiesto):
+    {"changes": ["2026_09.csv", "2026_10.csv"]}
+"""
 
-    # if 'changes' in json_data:
+def storeInflumeter(data: List[str], db_file: str) -> None:
+    print("Storing Influmeter data")
+    db_path = os.path.join(os.getcwd(), "repo/.github/data-storage/", db_file)
+    print(f"DB path: {db_path}")
 
-    # else:
-    #     json_data['changes'] = 
-    
+    # Step 1: leggere i dati esistenti dal file JSON.
+    # Il file deve già esistere (anche vuoto / contenente "{}"): se manca,
+    # solleviamo un errore esplicito invece di crearlo silenziosamente.
+    try:
+        with open(db_path, "r") as fdb:
+            raw = fdb.read().strip()
+            # file letteralmente vuoto (0 byte) -> trattalo come "{}"
+            json_data = json.loads(raw) if raw else {}
+            print(f"JSON DB CONTENT: \n{json_data}")
+    except FileNotFoundError:
+        raise Exception(f"Json file not found {db_path}\n")
+    except json.JSONDecodeError as exc:
+        raise Exception(f"Json file non valido {db_path}: {exc}\n")
 
+    if not isinstance(json_data, dict):
+        raise Exception(
+            f"Contenuto inatteso in {db_path}: atteso un oggetto JSON, trovato {type(json_data).__name__}"
+        )
 
+    # Step 2: se il file era vuoto / non conteneva ancora 'changes', crealo
+    if "changes" not in json_data:
+        json_data["changes"] = []
 
+    # Step 3: aggiungere i nuovi file, controllando che non siano già presenti.
+    existing = set(json_data["changes"])
+    added = []
+    for item in data:
+        
+        # TODO: Stabilire se path completo o solo basename
+        # Normalizziamo al solo nome file (basename) nel caso 'data' contenga path
+        # completi tipo "previsioni/influmeter/2026_09.csv".
+        # filename = os.path.basename(item.strip())
+        
+        filename = item.strip()
+        if not filename:
+            continue
+        if filename in existing:
+            print(f"'{filename}' già presente in {db_file}, salto.")
+            continue
+        json_data["changes"].append(filename)
+        existing.add(filename)
+        added.append(filename)
 
+    if not added:
+        print("Nessun nuovo file da aggiungere: DB non modificato, salto la scrittura.")
+        return
 
+    # Step 4: persistere le modifiche su disco (il commit vero e proprio lo fa
+    # lo step successivo del workflow, add-and-commit, sulla working copy in ./repo)
+    with open(db_path, "w") as fdb:
+        json.dump(json_data, fdb, indent=2)
+        fdb.write("\n")
 
-
+    print(f"Aggiunti {len(added)} nuovi file a {db_file}: {added}")
 
 
 
