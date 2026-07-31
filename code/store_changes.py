@@ -158,10 +158,10 @@ storeInflumeter — persiste l'elenco dei file influmeter modificati/mergiati
 in un file JSON sotto repo/.github/data-storage/<db_file>.
 
 Pensata per essere richiamata da store_changes.py con:
-    storeInflumeter(data=<lista di path/nomi file>, db_file="influmeter_changes.json")
+    storeInflumeter(data=<lista di path/nomi file>, db_file="influmeter_db.json")
 
 Formato del db (semplice, come richiesto):
-    {"changes": ["2026_09.csv", "2026_10.csv"]}
+    {"changes": ["previsioni/influmeter/2026_09.csv", "previsioni/influmeter/2026_10.csv"]}
 """
 
 def storeInflumeter(data: List[str], db_file: str) -> None:
