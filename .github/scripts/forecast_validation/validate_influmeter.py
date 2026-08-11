@@ -15,10 +15,10 @@ tramite la variabile d'ambiente AUTHORIZED_USERS_FILE.
 
 Nessuna dipendenza esterna: solo libreria standard.
 
-Contratto con il workflow (step id `authenticate`):
+Contratto con il workflow (step id `validate`):
   Lo script scrive su $GITHUB_OUTPUT due output, letti dal workflow per
   decidere se procedere con l'auto-merge o commentare l'errore sulla PR:
-    authenticate = "success" | "failure"
+    validate = "success" | "failure"
     message      = riepilogo (multilinea) degli errori, vuoto se success
 
   Il job `validate_request` deve SEMPRE completare con successo (exit 0)
@@ -28,7 +28,7 @@ Contratto con il workflow (step id `authenticate`):
   == 'true'/'false'` SENZA `always()`/`failure()`, quindi se questo step
   fallisse (exit != 0) GitHub salterebbe entrambi i job downstream e la PR
   non riceverebbe alcun commento. L'esito di validazione va quindi
-  comunicato solo tramite l'output `authenticate`, non tramite l'exit code.
+  comunicato solo tramite l'output `validate`, non tramite l'exit code.
 
   Quando lo script viene eseguito FUORI da Actions (GITHUB_OUTPUT non
   definita, es. test locali/CI di unit test) l'exit code torna a riflettere
@@ -454,18 +454,18 @@ def _validate_cross_horizon_consistency(
 
 
 # --------------------------------------------------------------------------
-# Output verso GitHub Actions (step id: authenticate)
+# Output verso GitHub Actions (step id: validate)
 # --------------------------------------------------------------------------
 
-def write_github_output(authenticate: str, message: str) -> None:
-    """Scrive gli output `authenticate` e `message` su $GITHUB_OUTPUT, se
+def write_github_output(validate: str, message: str) -> None:
+    """Scrive gli output `validate` e `message` su $GITHUB_OUTPUT, se
     presente (cioè quando lo script gira dentro un job di GitHub Actions)."""
     output_path = os.environ.get("GITHUB_OUTPUT")
     if not output_path:
         return
     delimiter = f"EOF_{uuid.uuid4().hex}"
     with open(output_path, "a", encoding="utf-8") as fh:
-        fh.write(f"authenticate={authenticate}\n")
+        fh.write(f"validate={validate}\n")
         fh.write(f"message<<{delimiter}\n{message}\n{delimiter}\n")
 
 
