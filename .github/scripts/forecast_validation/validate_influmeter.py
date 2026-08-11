@@ -15,10 +15,10 @@ tramite la variabile d'ambiente AUTHORIZED_USERS_FILE.
 
 Nessuna dipendenza esterna: solo libreria standard.
 
-Contratto con il workflow (step id `validate`):
+Contratto con il workflow (step id `authenticate`):
   Lo script scrive su $GITHUB_OUTPUT due output, letti dal workflow per
   decidere se procedere con l'auto-merge o commentare l'errore sulla PR:
-    validate = "success" | "failure"
+    authenticate = "success" | "failure"
     message      = riepilogo (multilinea) degli errori, vuoto se success
 
   Il job `validate_request` deve SEMPRE completare con successo (exit 0)
@@ -28,7 +28,7 @@ Contratto con il workflow (step id `validate`):
   == 'true'/'false'` SENZA `always()`/`failure()`, quindi se questo step
   fallisse (exit != 0) GitHub salterebbe entrambi i job downstream e la PR
   non riceverebbe alcun commento. L'esito di validazione va quindi
-  comunicato solo tramite l'output `validate`, non tramite l'exit code.
+  comunicato solo tramite l'output `authenticate`, non tramite l'exit code.
 
   Quando lo script viene eseguito FUORI da Actions (GITHUB_OUTPUT non
   definita, es. test locali/CI di unit test) l'exit code torna a riflettere
@@ -53,7 +53,8 @@ from typing import Optional
 # --------------------------------------------------------------------------
 
 EXPECTED_COLUMNS = [
-    "model_id",
+    "team_name",
+    "model_name",
     "horizon",
     "start_date",
     "end_date",
@@ -67,7 +68,11 @@ EXPECTED_COLUMNS = [
     "influmeter_index",
 ]
 
-VALID_MODEL_IDS = {"ensemble"}
+# Coppie (team_name, model_name) attualmente riconosciute, stessa convenzione di
+# denominazione team/model usata per le forecast (cartella "Influcast-Ensemble" nel
+# repo dati). Elenco pensato per crescere quando si aggiungeranno altri modelli.
+VALID_TEAM_MODEL_PAIRS = {("Influcast", "Ensemble")}
+
 VALID_TARGETS = {"ARI"}
 VALID_HORIZONS = {1, 2, 3, 4}
 VALID_LOCATIONS = {"IT"} | {f"{i:02d}" for i in range(1, 22)}  # IT + 01..21
@@ -77,6 +82,7 @@ PROB_SUM_TARGET = 100.0
 PROB_SUM_TOLERANCE = 0.5  # punti percentuali
 
 # Formato data confermato: anno a quattro cifre, es. 2026-07-24
+# (coerente con l'output reale di compute_influmeter_index.py, che usa date.isoformat())
 DATE_FORMAT = "%Y-%m-%d"
 
 # Soglie del bucket influmeter_index -> colonna di probabilità attesa come massima
@@ -89,15 +95,11 @@ INDEX_BUCKETS = [
     (80.0, 100.0, "p_very_high"),
 ]
 
-# Path convenzionale dei CSV nel repo dati: previsioni/influmeter/YYYY_WW.csv
+# Path convenzionale dei CSV nel repo dati: previsioni/influmeter/YYYY_WW_influmeter.csv
 FILE_PATTERN = re.compile(r"^previsioni/influmeter/(?P<year>\d{4})_(?P<week>\d{2})_influmeter\.csv$")
 
-# DEFAULT_AUTHORIZED_USERS_FILE = os.path.join(
-#     os.path.dirname(os.path.abspath(__file__)), "authorized_users.json"
-# )
-
 # authorized_users.json vive nella cartella "sorella" request_authentication
-# (.github/scripts/request_authentication/), non con questo script
+# (.github/scripts/request_authentication/), non accanto a questo script
 # (.github/scripts/forecast_validation/), perché è una risorsa di autenticazione
 # condivisa e non specifica della validazione influmeter.
 DEFAULT_AUTHORIZED_USERS_FILE = os.path.normpath(
@@ -309,9 +311,13 @@ def _validate_row(
     def warn(msg: str) -> None:
         collector.warning(path, msg, line=line_no)
 
-    model_id = (row.get("model_id") or "").strip()
-    if model_id not in VALID_MODEL_IDS:
-        err(f"model_id non valido: '{model_id}' (atteso uno tra {sorted(VALID_MODEL_IDS)})")
+    team_name = (row.get("team_name") or "").strip()
+    model_name = (row.get("model_name") or "").strip()
+    if (team_name, model_name) not in VALID_TEAM_MODEL_PAIRS:
+        err(
+            f"coppia team_name/model_name non valida: '{team_name}'/'{model_name}' "
+            f"(attese: {sorted(VALID_TEAM_MODEL_PAIRS)})"
+        )
 
     target = (row.get("target") or "").strip()
     if target not in VALID_TARGETS:
@@ -448,18 +454,18 @@ def _validate_cross_horizon_consistency(
 
 
 # --------------------------------------------------------------------------
-# Output verso GitHub Actions (step id: validate)
+# Output verso GitHub Actions (step id: authenticate)
 # --------------------------------------------------------------------------
 
-def write_github_output(validate: str, message: str) -> None:
-    """Scrive gli output `validate` e `message` su $GITHUB_OUTPUT, se
+def write_github_output(authenticate: str, message: str) -> None:
+    """Scrive gli output `authenticate` e `message` su $GITHUB_OUTPUT, se
     presente (cioè quando lo script gira dentro un job di GitHub Actions)."""
     output_path = os.environ.get("GITHUB_OUTPUT")
     if not output_path:
         return
     delimiter = f"EOF_{uuid.uuid4().hex}"
     with open(output_path, "a", encoding="utf-8") as fh:
-        fh.write(f"validate={validate}\n")
+        fh.write(f"authenticate={authenticate}\n")
         fh.write(f"message<<{delimiter}\n{message}\n{delimiter}\n")
 
 
@@ -501,7 +507,7 @@ def main() -> int:
     if not influmeter_files:
         collector.error(
             "input",
-            "Nessun file CSV nel path atteso 'previsioni/influmeter/YYYY_WW.csv' tra i "
+            "Nessun file CSV nel path atteso 'previsioni/influmeter/YYYY_WW_influmeter.csv' tra i "
             f"file modificati dalla PR. File modificati: {changed_files or '(nessuno)'}",
         )
         return finish()
