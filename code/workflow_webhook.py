@@ -176,6 +176,7 @@ def run ():
         exit(1)
 
     print (f"### sending: \n{jpayload}\n")
+    print (f"### sending to: \n{wh_url}\n")
     
     
     
