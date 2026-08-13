@@ -170,7 +170,7 @@ def run ():
         jpayload["season"] = jdata["season"]
         jpayload["targets"] = jdata["targets"]
     elif data_type == 'influmeter':
-        jpayload["influmeter"] = jdata["changes"]
+        jpayload["influmeter_data"] = jdata["changes"]
         # jpayload = jdata
     else:
         print (f'Unsupported submission datatype: {data_type}')
