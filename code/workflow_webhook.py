@@ -138,7 +138,14 @@ def run ():
     data_type = os.getenv("data_type")
     wh_secret = os.getenv("webhook_secret")
     # season = os.getenv("season")
-    wh_url = os.getenv("webhook_url") + ("forecast/" if data_type == 'forecast' else "surveillance/" )
+
+    
+    wh_url = os.getenv("webhook_url") + (
+        "forecast/" if data_type == "forecast"
+        else "influmeter/" if data_type == "influmeter"
+        else "surveillance/"
+    )    
+    # wh_url = os.getenv("webhook_url") + ("forecast/" if data_type == 'forecast' else "surveillance/" )
         
     jdata = json.loads(json_data)
     
