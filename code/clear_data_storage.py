@@ -48,6 +48,8 @@ def run(storage_type, not_ingested):
 
     elif storage_type == "target":
         db_path = os.path.join(os.getcwd(), "./repo/.github/data-storage/target_db.json")
+    elif storage_type == "influmeter":
+        db_path = os.path.join(os.getcwd(), "./repo/.github/data-storage/influmeter_db.json")
     else:
         print("unknown storage_type")
 
