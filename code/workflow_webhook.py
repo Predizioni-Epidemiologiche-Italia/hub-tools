@@ -41,6 +41,7 @@ class Sender () :
 
   def send (self, payload, secret):
     # send POST request 
+    print (f"### sending to: \n{self.webhook_url}\n")
     r = requests.post(self.webhook_url, data=payload, auth=BodyDigestSignature(secret))
 
     return r
