@@ -23,7 +23,8 @@ import pandas as pd
 
 ENSEMBLE_URL = "https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/refs/heads/main/previsioni/Influcast-Ensemble/{}.csv"
 
-MODEL_ID = "ensemble"
+MODEL_ID = "Ensemble"
+TEAM_ID = "Influcast"
 TARGET = "ARI"
 HORIZONS = [1, 2, 3, 4]
 
@@ -171,10 +172,11 @@ def compute_influmeter(forecasting_week):
 
         rows.append({
             "model_id": MODEL_ID,
-            "horizon": int(horizon),
-            "start_date": start_date,
-            "end_date": end_date,
-            "location_id": location,
+            "team_id": TEAM_ID,
+            "orizzonte": int(horizon),
+            "data_inizio": start_date,
+            "data_fine": end_date,
+            "luogo": location,
             "target": TARGET,
             "p_baseline": round(probs["baseline"], 2),
             "p_low": round(probs["low"], 2),
@@ -185,11 +187,11 @@ def compute_influmeter(forecasting_week):
         })
 
     result = pd.DataFrame(rows, columns=[
-        "model_id", "horizon", "start_date", "end_date", "location_id",
+        "model_id", "team_id", "orizzonte", "data_inizio", "data_fine", "luogo",
         "target", "p_baseline", "p_low", "p_medium", "p_high",
         "p_very_high", "influmeter_index",
     ])
-    result.sort_values(by=["location_id", "horizon"], inplace=True)
+    result.sort_values(by=["luogo", "orizzonte"], inplace=True)
     result.reset_index(drop=True, inplace=True)
     return result
 
