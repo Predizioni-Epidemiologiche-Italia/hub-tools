@@ -49,16 +49,16 @@ from typing import Optional
 
 
 # --------------------------------------------------------------------------
-# Schema / costanti derivate dal documento di specifica del formato CSV
+# Schema / costanti del formato CSV
 # --------------------------------------------------------------------------
 
 EXPECTED_COLUMNS = [
     "team_name",
     "model_name",
-    "horizon",
-    "start_date",
-    "end_date",
-    "location_id",
+    "orizzonte",
+    "data_inizio",
+    "data_fine",
+    "luogo",
     "target",
     "p_baseline",
     "p_low",
@@ -323,26 +323,26 @@ def _validate_row(
     if target not in VALID_TARGETS:
         err(f"target non valido: '{target}' (atteso uno tra {sorted(VALID_TARGETS)})")
 
-    location_id = (row.get("location_id") or "").strip()
+    location_id = (row.get("luogo") or "").strip()
     if location_id not in VALID_LOCATIONS:
         err(f"location_id non valido: '{location_id}'")
 
-    horizon_raw = (row.get("horizon") or "").strip()
+    horizon_raw = (row.get("orizzonte") or "").strip()
     horizon: Optional[int] = None
     try:
-        horizon = int(horizon_raw)
+        orizzonte = int(horizon_raw)
         if horizon not in VALID_HORIZONS:
             err(f"horizon fuori range: {horizon} (atteso uno tra {sorted(VALID_HORIZONS)})")
             horizon = None
     except ValueError:
         err(f"horizon non è un intero valido: '{horizon_raw}'")
 
-    start_date = parse_date((row.get("start_date") or "").strip())
-    end_date = parse_date((row.get("end_date") or "").strip())
+    start_date = parse_date((row.get("data_inizio") or "").strip())
+    end_date = parse_date((row.get("data_fine") or "").strip())
     if start_date is None:
-        err(f"start_date non valida o formato errato (atteso {DATE_FORMAT}): '{row.get('start_date')}'")
+        err(f"start_date non valida o formato errato (atteso {DATE_FORMAT}): '{row.get('data_inizio')}'")
     if end_date is None:
-        err(f"end_date non valida o formato errato (atteso {DATE_FORMAT}): '{row.get('end_date')}'")
+        err(f"end_date non valida o formato errato (atteso {DATE_FORMAT}): '{row.get('data_fine')}'")
 
     if start_date is not None and end_date is not None:
         if end_date <= start_date:
