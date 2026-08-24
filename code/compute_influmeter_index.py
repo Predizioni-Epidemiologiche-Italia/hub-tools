@@ -4,8 +4,8 @@ region and forecast horizon, for a given Influcast forecasting week.
 
 Standalone script: reads the ensemble forecast directly from the Influcast
 GitHub repository and writes a CSV matching the Influcast dashboard data
-schema (model_id, horizon, start_date, end_date, location_id, target,
-p_baseline, p_low, p_medium, p_high, p_very_high, influmeter_index).
+schema (model_name, team_name, orizzonte, data_inizio, data_fine, luogo, 
+target, p_baseline, p_low, p_medium, p_high, p_very_high, influmeter_index).
 
 Usage:
     python compute_influmeter_index.py <forecasting_week> <output_path>
@@ -23,8 +23,8 @@ import pandas as pd
 
 ENSEMBLE_URL = "https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/refs/heads/main/previsioni/Influcast-Ensemble/{}.csv"
 
-MODEL_ID = "Ensemble"
-TEAM_ID = "Influcast"
+MODEL_NAME = "Ensemble"
+TEAM_NAME = "Influcast"
 TARGET = "ARI"
 HORIZONS = [1, 2, 3, 4]
 
@@ -171,8 +171,8 @@ def compute_influmeter(forecasting_week):
         )
 
         rows.append({
-            "model_id": MODEL_ID,
-            "team_id": TEAM_ID,
+            "model_name": MODEL_NAME,
+            "team_name": TEAM_NAME,
             "orizzonte": int(horizon),
             "data_inizio": start_date,
             "data_fine": end_date,
@@ -187,7 +187,7 @@ def compute_influmeter(forecasting_week):
         })
 
     result = pd.DataFrame(rows, columns=[
-        "model_id", "team_id", "orizzonte", "data_inizio", "data_fine", "luogo",
+        "model_name", "team_name", "orizzonte", "data_inizio", "data_fine", "luogo",
         "target", "p_baseline", "p_low", "p_medium", "p_high",
         "p_very_high", "influmeter_index",
     ])
