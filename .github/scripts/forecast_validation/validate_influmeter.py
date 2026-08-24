@@ -330,7 +330,7 @@ def _validate_row(
     horizon_raw = (row.get("orizzonte") or "").strip()
     horizon: Optional[int] = None
     try:
-        orizzonte = int(horizon_raw)
+        horizon = int(horizon_raw)
         if horizon not in VALID_HORIZONS:
             err(f"horizon fuori range: {horizon} (atteso uno tra {sorted(VALID_HORIZONS)})")
             horizon = None
