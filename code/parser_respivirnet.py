@@ -169,6 +169,11 @@ if __name__ == "__main__":
   args = parser.parse_args()
   season = args.season
 
+  # Ensure the output directories exist for the specified season
+  for target in ("ARI", "ARI+_FLU"):
+    os.makedirs(f"./sorveglianza/{target}/{season}/latest", exist_ok=True)
+
+  
   print(f"Fetching surveillance data for season {season}...")
   
   response = requests.get(BASE_URL)
