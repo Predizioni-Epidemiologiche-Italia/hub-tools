@@ -7,6 +7,7 @@ import pandas as pd
 import re
 import os
 from urllib.parse import urljoin
+import argparse
 
 # Region names as they appear in the data vs the names used in Influcast
 region_names = {'Piemonte': "piemonte", 
@@ -33,7 +34,7 @@ region_names = {'Piemonte': "piemonte",
 
 # Base URL for the surveillance report
 BASE_URL = "https://www.epicentro.iss.it/sorveglianza-infezioni-respiratorie-acute/rapporto/rapporto.html"
-season = "2025-2026" ## TODO: change to argument passed to the script
+
 
 ## Functions
 def extract_week_info(soup):
@@ -156,7 +157,20 @@ def compute_ari_plus_df(df_italy, df_flu_viruses, df_other_viruses, influenza_st
 # TODO: Fix all paths
 # TODO: Possibily move all functions to a separate file
 if __name__ == "__main__":
-  print("Fetching data...")
+
+  parser = argparse.ArgumentParser(description="Fetch and parse ISS RespiVirNet surveillance data")
+  parser.add_argument(
+      "--season",
+      type=str,
+      required=True,
+      help="Influenza season in YYYY-YYYY format (e.g. 2026-2027)"
+  )
+
+  args = parser.parse_args()
+  season = args.season
+
+  print(f"Fetching surveillance data for season {season}...")
+  
   response = requests.get(BASE_URL)
   print("Data fetched")
 
