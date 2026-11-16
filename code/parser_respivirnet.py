@@ -10,25 +10,25 @@ from urllib.parse import urljoin
 import argparse
 
 # Region names as they appear in the data vs the names used in Influcast
-region_names = {'Piemonte': "piemonte", 
-                "Valle d'Aosta/Vallée d'Aoste": 'valle_d_aosta', 
-                'Lombardia': 'lombardia', 
-                'Provincia Autonoma di Bolzano/Bozen': 'pa_bolzano', 
+region_names = {'Piemonte': "piemonte",
+                "Valle d'Aosta/Vallée d'Aoste": 'valle_d_aosta',
+                'Lombardia': 'lombardia',
+                'Provincia Autonoma di Bolzano/Bozen': 'pa_bolzano',
                 'Provincia Autonoma di Trento': 'pa_trento',
-                'Veneto': 'veneto', 
-                'Friuli-Venezia Giulia': 'friuli_venezia_giulia', 
-                'Liguria': 'liguria', 
+                'Veneto': 'veneto',
+                'Friuli-Venezia Giulia': 'friuli_venezia_giulia',
+                'Liguria': 'liguria',
                 'Emilia-Romagna': 'emilia_romagna',
-                'Toscana': 'toscana', 
-                'Umbria': 'umbria', 
-                'Marche': 'marche', 
-                'Lazio': 'lazio', 
-                'Abruzzo': 'abruzzo', 
+                'Toscana': 'toscana',
+                'Umbria': 'umbria',
+                'Marche': 'marche',
+                'Lazio': 'lazio',
+                'Abruzzo': 'abruzzo',
                 'Molise': 'molise',
-                'Campania': 'campania', 
-                'Puglia': 'puglia', 
-                'Basilicata': 'basilicata', 
-                'Calabria': 'calabria', 
+                'Campania': 'campania',
+                'Puglia': 'puglia',
+                'Basilicata': 'basilicata',
+                'Calabria': 'calabria',
                 'Sicilia': 'sicilia',
                 'Sardegna': 'sardegna'}
 
@@ -42,7 +42,7 @@ def extract_week_info(soup):
     # Look for week pattern in headings
     headings = soup.find_all(['h2', 'h3', 'h4'])
     week_pattern = re.compile(r'(\d{4})-(\d{1,2})')
-    
+
     for heading in headings:
         text = heading.get_text(strip=True)
         if 'settimana' in text.lower() or 'week' in text.lower():
@@ -59,7 +59,7 @@ def extract_all_tables(soup):
     """Extract all tables from the page"""
     tables = soup.find_all('table')
     all_dfs = []
-    
+
     for i, table in enumerate(tables):
         try:
             html_str = str(table)
@@ -71,14 +71,14 @@ def extract_all_tables(soup):
         except Exception as e:
             print(f"Could not parse table {i}: {e}")
             continue
-    
+
     return all_dfs
 
 
 def parse_italy_data(ari_ita, population_ita):
     """"Parses the Italy data from the ARI and population tables"""
     anno, settimana, numero_casi, numero_assistiti, incidenza = [], [], [], [], []
-    for _, row in ari_ita.iterrows(): 
+    for _, row in ari_ita.iterrows():
         year_week = row["Settimana"]["Settimana"]
         anno.append(year_week.split("-")[0])
         settimana.append(year_week.split("-")[1])
@@ -86,10 +86,10 @@ def parse_italy_data(ari_ita, population_ita):
         incidenza.append(row["Totale Incidenza"]["Totale Incidenza"])
         numero_assistiti.append(population_ita.loc[population_ita.Settimana == year_week]["Totale"].values[0])
 
-    df_italy = pd.DataFrame({"anno": anno, 
-                            "settimana": settimana, 
-                            "numero_casi": numero_casi, 
-                            "numero_assistiti": numero_assistiti, 
+    df_italy = pd.DataFrame({"anno": anno,
+                            "settimana": settimana,
+                            "numero_casi": numero_casi,
+                            "numero_assistiti": numero_assistiti,
                             "incidenza": incidenza})
     df_italy["target"] = "ARI"
     return df_italy
@@ -104,9 +104,9 @@ def parse_regions_data(regions_table, regions_population):
         year_week = row["Settimana"]["Settimana"]
 
         if pd.notna(row["Totale Incidenza"]["Totale Incidenza"]):
-            df_region = pd.DataFrame({"anno": [year_week.split("-")[0]], 
-                                      "settimana": [year_week.split("-")[1]], 
-                                      "numero_casi": [row["Totale Casi"]["Totale Casi"]], 
+            df_region = pd.DataFrame({"anno": [year_week.split("-")[0]],
+                                      "settimana": [year_week.split("-")[1]],
+                                      "numero_casi": [row["Totale Casi"]["Totale Casi"]],
                                       "incidenza": [row["Totale Incidenza"]["Totale Incidenza"]]})
             df_region["numero_assistiti"] = regions_population.loc[regions_population["Regione-PA"] == row["Regione-PA"]["Regione-PA"]]["Totale Assistiti"].values[0]
             df_region["target"] = "ARI"
@@ -124,7 +124,7 @@ def get_latest_week(path, target, season, region="italia"):
     return df_latest.year_week.max()
 
 
-def compute_ari_plus_df(df_italy, df_flu_viruses, df_other_viruses, influenza_strain, target_name): 
+def compute_ari_plus_df(df_italy, df_flu_viruses, df_other_viruses, influenza_strain, target_name):
     """Computes the ARI+FLU_A/B data from the ARI and the flu viruses data"""
     anno, settimana, incidenza = [], [], []
     for _, row in df_italy.iterrows():
@@ -173,9 +173,9 @@ if __name__ == "__main__":
   for target in ("ARI", "ARI+_FLU"):
     os.makedirs(f"./sorveglianza/{target}/{season}/latest", exist_ok=True)
 
-  
+
   print(f"Fetching surveillance data for season {season}...")
-  
+
   response = requests.get(BASE_URL)
   print("Data fetched")
 
@@ -197,7 +197,7 @@ if __name__ == "__main__":
         print(f"Extracted {len(all_dataframes)} tables")
 
         # Parse Italy data (ARI)
-        ari_ita, population_ita = all_dataframes[0], all_dataframes[3]
+        ari_ita, population_ita = all_dataframes[0], all_dataframes[2]
         df_italy = parse_italy_data(ari_ita, population_ita)
 
         # Save Italy data (ARI)
@@ -205,19 +205,19 @@ if __name__ == "__main__":
         df_italy.to_csv("./sorveglianza/ARI/{}/latest/italia-latest-ARI.csv".format(season), index=False)
 
         # Parse regions data
-        regions_table, regions_population = all_dataframes[1], all_dataframes[4]
+        regions_table, regions_population = all_dataframes[3], all_dataframes[4]
         regions_dfs = parse_regions_data(regions_table, regions_population)
 
         # Save regions data (ARI)
         for region, df_region in regions_dfs.items():
             latest_file_path = "./sorveglianza/ARI/{}/latest/{}-latest-ARI.csv".format(season, region)
             if os.path.exists(latest_file_path):
-                # Import latest file for this region 
+                # Import latest file for this region
                 df_latest_region = pd.read_csv(latest_file_path)
                 # Concatenate the two dataframes
                 df_latest_region = pd.concat([df_latest_region, df_region], ignore_index=True)
                 # Save week and latest file
-            else: 
+            else:
                 df_latest_region = df_region
             df_latest_region.to_csv("./sorveglianza/ARI/{}/latest/{}-latest-ARI.csv".format(season, region), index=False)
             df_latest_region.to_csv("./sorveglianza/ARI/{}/{}-{}-ARI.csv".format(season, region, week_id), index=False)
@@ -236,4 +236,3 @@ if __name__ == "__main__":
         df_ari_plus_A.to_csv("./sorveglianza/ARI+_FLU/{}/latest/italia-latest-ARI+_FLU_A.csv".format(season), index=False)
         df_ari_plus_B.to_csv("./sorveglianza/ARI+_FLU/{}/{}-{}-ARI+_FLU_B.csv".format(season, "italia", week_id), index=False)
         df_ari_plus_B.to_csv("./sorveglianza/ARI+_FLU/{}/latest/italia-latest-ARI+_FLU_B.csv".format(season), index=False)
-
