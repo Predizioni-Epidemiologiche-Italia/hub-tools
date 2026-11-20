@@ -2,8 +2,8 @@
     "teams": [
 	{
 	    "name": "ISI",
-	    "models": ["FluABCaster", "FluBcast", "IPSICast", "GLEAM", "Respiro"],
-	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino", "luca-rossi-it", "respiro-bot"]
+	    "models": ["FluABCaster", "FluBcast", "IPSICast", "GLEAM", "Respiro", "TriFM"],
+	    "users": ["ngozzi", "mattiamazzoli", "sfiandrino", "luca-rossi-it", "respiro-bot", "anaparovic"]
 	},
 	{
 	    "name": "ev_and_modelers",
