@@ -41,6 +41,11 @@
 		"users": ["martina-rama"]
 	},
 	{
+		"name": "CNR4Cast",
+	    "models": ["SIR_EnKF"],
+	    "users": ["steguar", "alecel", "cayce-pollard"]
+	},
+	{
 	    "name": "TestTeam",
 	    "models": ["TestModel"],
 	    "users": ["PMi74", "gioco", "Chappi74", "M-7th"]
