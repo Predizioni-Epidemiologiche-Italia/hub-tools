@@ -41,11 +41,11 @@ MEM_THRESHOLDS = {
         "very_high": [19.61, float("inf")],
     },
     "2026-2027": {
-        "baseline": [0., 7.22],
-        "low": [7.22, 13.35],
-        "medium": [13.35, 17.43],
-        "high": [17.43, 19.61],
-        "very_high": [19.61, float("inf")],
+        "baseline": [0., 8.00],
+        "low": [8.00, 13.77],
+        "medium": [13.77, 17.76],
+        "high": [17.76, 19.87],
+        "very_high": [19.87, float("inf")],
     },
 }
 
