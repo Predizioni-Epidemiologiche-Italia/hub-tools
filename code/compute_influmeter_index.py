@@ -40,6 +40,13 @@ MEM_THRESHOLDS = {
         "high": [17.43, 19.61],
         "very_high": [19.61, float("inf")],
     },
+    "2026-2027": {
+        "baseline": [0., 7.22],
+        "low": [7.22, 13.35],
+        "medium": [13.35, 17.43],
+        "high": [17.43, 19.61],
+        "very_high": [19.61, float("inf")],
+    },
 }
 
 # Full quantile spread published by the ensemble; treated as the entire
