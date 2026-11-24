@@ -29,7 +29,10 @@ models = ["comunipd-mobnetSI2R",
           "ev_and_modelers-DeepRE",
           "FBK_HE-REST_HE", 
           "UNIPD_NEIDE-SEEIIRS_MCMC", 
-          "C2S2_Trento-SIR_INN"]
+          "C2S2_Trento-SIR_INN", 
+          "CNR4Cast-SIR_EnKF", 
+          "ISI-Respiro", 
+          "ISI-TriFM"]
 
 # compute year_week 
 iso_year, iso_week, _ = date.today().isocalendar()
