@@ -49,6 +49,15 @@ MEM_THRESHOLDS = {
     },
 }
 
+# Theoretical maximum incidence for the InfluMeter index, as a multiple of the
+# season's very_high threshold. Values between the very_high threshold and
+# the cap are interpolated linearly from 80 to 100; values at or above the cap
+# are clipped to 100. Band probabilities keep the open-ended very_high band.
+# 1.25 (~25 casi per mille) is about the 90th percentile of weekly incidence
+# in the very_high band for Italy and the largest regions, seasons
+# 2015-16 to 2025-26 excluding 2020-21 and 2021-22.
+INDEX_MAX_RATIO = 1.25
+
 # Full quantile spread published by the ensemble; treated as the entire
 # probability mass (0% to 100%) when computing band probabilities.
 QUANTILE_MIN = 0.01
@@ -70,17 +79,24 @@ def resolve_season(forecasting_week):
     return f"{year - 1}-{year}"
 
 
-def get_influmeter_index(value, thresholds):
+def get_influmeter_index(value, thresholds, index_max):
     """
     Map an incidence value to the InfluMeter index (0-100) and MEM level,
     via piecewise-linear interpolation within the matching MEM band.
+
+    The open-ended very_high band is interpolated up to `index_max`
+    (theoretical maximum incidence); values beyond it are clipped to 100.
     """
     for idx, level in enumerate(LEVELS):
         lo, hi = thresholds[level]
         if value >= lo and value < hi:
             if np.isinf(hi):
-                return WKS[idx + 1], level
-            frac = (value - lo) / (hi - lo)
+                if index_max <= lo:
+                    raise ValueError(
+                        f"index_max ({index_max}) must exceed the {level} threshold ({lo})"
+                    )
+                hi = index_max
+            frac = min((value - lo) / (hi - lo), 1.0)
             index = WKS[idx] + (WKS[idx + 1] - WKS[idx]) * frac
             return index, level
     # value below the lowest threshold's lower bound (shouldn't happen, lo=0)
@@ -153,6 +169,7 @@ def compute_influmeter(forecasting_week):
             f"Available seasons: {list(MEM_THRESHOLDS.keys())}"
         )
     thresholds = MEM_THRESHOLDS[season]
+    index_max = INDEX_MAX_RATIO * thresholds["very_high"][0]
 
     df = fetch_ensemble(forecasting_week)
     df = df[
@@ -171,7 +188,7 @@ def compute_influmeter(forecasting_week):
         if median_rows.empty:
             continue
         median_value = median_rows["valore"].iloc[0]
-        influmeter_index, _ = get_influmeter_index(median_value, thresholds)
+        influmeter_index, _ = get_influmeter_index(median_value, thresholds, index_max)
 
         probs = compute_band_probabilities(
             group["id_valore"].values, group["valore"].values, thresholds
