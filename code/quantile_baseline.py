@@ -4,6 +4,7 @@ import os
 from isoweek import Week
 from datetime import date
 import argparse
+from urllib.error import HTTPError
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--season')
@@ -213,7 +214,21 @@ def generate_baseline_forecast_fullpipeline(season,
     print('Path: ', os.path.join(path, basin_name + "-latest-" + target + ".csv"))
 
     isoweeks = pd.read_csv(f"https://raw.githubusercontent.com/Predizioni-Epidemiologiche-Italia/Influcast/main/supporting-files/settimane_{season}.csv")
-    truth_data = pd.read_csv(os.path.join(path, basin_name + "-latest-" + target + ".csv"))
+    
+                                                        
+
+    # truth_data = pd.read_csv(os.path.join(path, basin_name + "-latest-" + target + ".csv"))
+
+
+    truth_url = os.path.join(path, basin_name + "-latest-" + target + ".csv")
+
+    try:
+        truth_data = pd.read_csv(truth_url)
+    except HTTPError as exc:
+        if exc.code != 404:
+           raise
+        print(f"[SKIP] CSV assente: {basin_name}, {target}, {season}")
+        return pd.DataFrame()
 
     if truth_data.shape[0] <= 1: 
         return pd.DataFrame()
