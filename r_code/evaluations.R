@@ -42,6 +42,7 @@ suppressMessages({
 
 # Legge i parametri di lancio
 option_list <- list(
+  make_option("--season", type = "character", help = "Stagione da valutare (YYYY-YYYY)"),
   make_option("--forecasts", type = "character", help = "Directory delle previsioni"),
   make_option("--surveillance", type = "character", help = "Directory della sorveglianza"),
   make_option("--support", type = "character", help = "Directory dei file di support"),
@@ -50,6 +51,10 @@ option_list <- list(
 )
 
 opt <- parse_args(OptionParser(option_list = option_list))
+season <- opt$season
+if (is.null(season) || !nzchar(season)) {
+  stop("Specificare la stagione da valutare con --season (YYYY-YYYY)", call. = FALSE)
+}
 
 # Variabili usate poi nello script
 forecasts_dir     <- opt$forecasts
@@ -82,15 +87,15 @@ source(forecast_utils_path)
 # List all models and weeks
 
 models <- list_model_names(previsioni_dir = forecasts_dir)
-weeks <- get_season_weeks("2025-2026", supporting_dir = support_dir)
+weeks <- get_season_weeks(season, supporting_dir = support_dir)
 
 # Import forecasts
 forecasts <- read_all_forecasts(models, weeks, previsioni_dir = forecasts_dir)
 
 # Import actual data
-ari_latest <- read_all_actuals("2025-2026", "ARI", regions = regions_list, sorveglianza_dir = surveillance_dir)
-ari_plusA_latest <- read_all_actuals("2025-2026", "ARI+_FLU_A", regions = regions_list, sorveglianza_dir = surveillance_dir)
-ari_plusB_latest <- read_all_actuals("2025-2026", "ARI+_FLU_B", regions = regions_list, sorveglianza_dir = surveillance_dir)
+ari_latest <- read_all_actuals(season, "ARI", regions = regions_list, sorveglianza_dir = surveillance_dir)
+ari_plusA_latest <- read_all_actuals(season, "ARI+_FLU_A", regions = regions_list, sorveglianza_dir = surveillance_dir)
+ari_plusB_latest <- read_all_actuals(season, "ARI+_FLU_B", regions = regions_list, sorveglianza_dir = surveillance_dir)
 target_data <- rbind(ari_latest, ari_plusA_latest, ari_plusB_latest)
 
 # Merge forecasts and actual data
